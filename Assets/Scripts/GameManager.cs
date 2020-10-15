@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 
 	#region Things I Plug in Unity
 #pragma warning disable 0649
-	[SerializeField] private CameraFollow cameraFollow;
+	[SerializeField] private CodeMonkey.MonoBehaviours.CameraFollow cameraFollow;
 	[SerializeField] private Tilemap coralTileMap;
 	[SerializeField] private Tilemap groundTileMap;
 	[SerializeField] private Tilemap substrataTileMap;
@@ -29,8 +29,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject fishDisplay;
 	[SerializeField] private GameObject fishImage;
 	[SerializeField] private GameObject timeLeft;
-	[SerializeField] private GameObject feedbackText;
-	[SerializeField] private GameObject CNC;
+	// [SerializeField] private GameObject feedbackText;
+	// [SerializeField] private GameObject CNC;
 	//[SerializeField] private GameObject[] CoralOptions;
 	[SerializeField] private TileBase toxicOverlay;
 	[SerializeField] private GameObject popupCanvas;
@@ -40,8 +40,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject endGameScreen;
 	[SerializeField] private Sprite gameWinWordArt;
 	[SerializeField] private Sprite gameLoseWordArt;
-	[SerializeField] private GameObject ccTimerImage;
-	[SerializeField] private GameObject ccOverlay;
+	// [SerializeField] private GameObject ccTimerImage;
+	// [SerializeField] private GameObject ccOverlay;
 	[SerializeField] private int level;
 	[SerializeField] private int boardSize;
 #pragma warning restore 0649
@@ -51,26 +51,26 @@ public class GameManager : MonoBehaviour
 	TMPro.TextMeshProUGUI fishDisplayText;
 	UnityEngine.UI.Image fishImageImage;
 	TMPro.TextMeshProUGUI timeLeftText;
-	TMPro.TextMeshProUGUI ccTimerText;
+	// TMPro.TextMeshProUGUI ccTimerText;
 	ClimateChangeTimer ccTimer;
 	//UnityEngine.UI.Image[,] coralIndicators;
 	//UnityEngine.UI.Image[,] coralRackIndicators;
-	TMPro.TextMeshProUGUI cncText;
+	// TMPro.TextMeshProUGUI cncText;
 	GameEnd endGameScript;
 	PopupScript popupScript;
-	TMPro.TextMeshProUGUI feedbackTextText;
+	// TMPro.TextMeshProUGUI feedbackTextText;
 	private void InitializeComponents()
 	{
 		grid = GameObject.Find("Grid").GetComponent<Grid>();
 		fishDisplayText = fishDisplay.GetComponent<TMPro.TextMeshProUGUI>();
 		fishImageImage = fishImage.GetComponent<UnityEngine.UI.Image>();
 		timeLeftText = timeLeft.GetComponent<TMPro.TextMeshProUGUI>();
-		ccTimerText = ccTimerImage.transform.Find("CCTimeLeft").gameObject.GetComponent<TMPro.TextMeshProUGUI>();
-		ccTimer = ccTimerImage.GetComponent<ClimateChangeTimer>();
-		cncText = CNC.GetComponent<TMPro.TextMeshProUGUI>();
+		// ccTimerText = ccTimerImage.transform.Find("CCTimeLeft").gameObject.GetComponent<TMPro.TextMeshProUGUI>();
+		// ccTimer = ccTimerImage.GetComponent<ClimateChangeTimer>();
+		// cncText = CNC.GetComponent<TMPro.TextMeshProUGUI>();
 		endGameScript = endGameScreen.GetComponent<GameEnd>();
 		popupScript = popupCanvas.GetComponent<PopupScript>();
-		feedbackTextText = feedbackText.GetComponent<TMPro.TextMeshProUGUI>();
+		// feedbackTextText = feedbackText.GetComponent<TMPro.TextMeshProUGUI>();
 	}
 	#endregion
 	#region Data Structures for the Game
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
 	private Dictionary<Vector3Int, AlgaeCellData> algaeCells;
 	#endregion
 	#region Global Unchanging Values
-	private Vector3Int[,] hexNeighbors = new Vector3Int[,] {
+	private readonly Vector3Int[,] hexNeighbors = new Vector3Int[,] {
 		{new Vector3Int(1,0,0), new Vector3Int(0,-1,0), new Vector3Int(-1,-1,0), new Vector3Int(-1,0,0), new Vector3Int(-1,1,0), new Vector3Int(0,1,0)},
 		{new Vector3Int(1,0,0), new Vector3Int(1,-1,0), new Vector3Int(0,-1,0), new Vector3Int(-1,0,0), new Vector3Int(0,1,0), new Vector3Int(1,1,0)}
 	};
@@ -112,7 +112,6 @@ public class GameManager : MonoBehaviour
 	private bool timeToKillCorals;
 	private List<int> coralTypeNumbers;
 	private Vector2 resolution;
-	private Utility utility;
 	private int totalCoralTypes = 3;
 	#endregion
 
@@ -210,8 +209,7 @@ public class GameManager : MonoBehaviour
 	private int GetCoralsPerType(int type)
 	{
 		// TODO
-		int result = 0; 
-		result = growingCorals[type].Count; // assumes the structure changes in size
+		int result = growingCorals[type].Count;
 		for (int i = 0; i < growingCorals[type].Count; i++)
 		{
 			if (growingCorals[type][i] != null)
@@ -232,8 +230,7 @@ public class GameManager : MonoBehaviour
 	{
 		// TODO
 		// get ready corals per type: if (growingCorals[type][i].timer.isDone())
-		int ready = 0;
-		ready = growingCorals[type].Count;
+		int ready = growingCorals[type].Count;
 		for (int i = 0; i < growingCorals[type].Count; i++)
 		{
 			if (growingCorals[type][i] == null)
@@ -291,13 +288,12 @@ public class GameManager : MonoBehaviour
 		climateChangeTimer = new CountdownTimer(globalVarContainer.globals[level].timeUntilClimateChange);
 		climateChangeHasWarned = false;
 		climateChangeHasHappened = false;
-		utility = new Utility();
 		economyMachine = new EconomyMachine(10f, 0f, 5f, 15);
 		timeUntilEnd = new CountdownTimer(60f);
 		gameIsWon = false;
 		timeToKillCorals = false;
-		ccTimerImage.transform.Find("CCTimeLeft").gameObject.SetActive(false);
-		ccOverlay.SetActive(false);
+		// ccTimerImage.transform.Find("CCTimeLeft").gameObject.SetActive(false);
+		// ccOverlay.SetActive(false);
 		print("level is " + globalVarContainer.globals[level].level);
 		InitializeGame();
 	}
@@ -322,16 +318,16 @@ public class GameManager : MonoBehaviour
 		{
 			Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
 			if (!substrataTileMap.HasTile(localPlace)) continue;
-			if (!utility.WithinBoardBounds(localPlace, boardSize))
+			if (!Utility.WithinBoardBounds(localPlace, boardSize))
 			{
 				substrataTileMap.SetTile(localPlace, null);
 				continue;
 			}
-			TileBase currentTB = substrataTileMap.GetTile(localPlace);
+			TileBase currentTB = substrataTileMap.GetTile(pos);
 			int idx = FindIndexOfEntityFromName(currentTB.name);
 			if (idx == -1)
 			{ // UNKNOWN TILE; FOR NOW TOXIC
-				HashSet<Vector3Int> toxicSpread = utility.Spread(localPlace, 2);
+				HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
 				foreach (Vector3Int toxicPos in toxicSpread)
 				{
 					substrataOverlayTileMap.SetTile(toxicPos, toxicOverlay);
@@ -360,7 +356,7 @@ public class GameManager : MonoBehaviour
 			Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
 			if (!groundTileMap.HasTile(localPlace)) continue;
 			if (!coralTileMap.HasTile(localPlace)) continue;
-			if (!substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace) || !utility.WithinBoardBounds(localPlace, boardSize))
+			if (!substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace) || !Utility.WithinBoardBounds(localPlace, boardSize))
 			{
 				coralTileMap.SetTile(localPlace, null);
 				continue;
@@ -384,7 +380,7 @@ public class GameManager : MonoBehaviour
 			Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
 			if (!groundTileMap.HasTile(localPlace)) continue;
 			if (!algaeTileMap.HasTile(localPlace)) continue;
-			if (!substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || !utility.WithinBoardBounds(localPlace, boardSize))
+			if (!substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || !Utility.WithinBoardBounds(localPlace, boardSize))
 			{
 				algaeTileMap.SetTile(localPlace, null);
 				continue;
@@ -407,14 +403,14 @@ public class GameManager : MonoBehaviour
 		fishDisplayText.text = "Fish Income: 0";
 		if (hfTotalProduction >= cfTotalProduction)
 		{
-			fishImageImage.color = utility.green;
+			fishImageImage.color = Utility.green;
 		}
 		else
 		{
-			fishImageImage.color = utility.red;
+			fishImageImage.color = Utility.red;
 		}
 		UpdateFishData();
-		timeLeftText.text = utility.ConvertTimetoMS(tempTimer.currentTime);
+		timeLeftText.text = Utility.ConvertTimetoMS(tempTimer.currentTime);
 	}
 
 	private void Start()
@@ -461,19 +457,19 @@ public class GameManager : MonoBehaviour
 		if (!climateChangeTimer.isDone())
 		{
 			climateChangeTimer.updateTime();
-			ccTimerText.text = utility.ConvertTimetoMS(climateChangeTimer.currentTime);
+			// ccTimerText.text = Utility.ConvertTimetoMS(climateChangeTimer.currentTime);
 		}
 		if (!climateChangeHasWarned && climateChangeTimer.currentTime <= climateChangeTimer.timeDuration * (2.0 / 3.0))
 		{
 			climateChangeHasWarned = true;
-			ccTimerImage.transform.Find("CCTimeLeft").gameObject.SetActive(true);
+			// ccTimerImage.transform.Find("CCTimeLeft").gameObject.SetActive(true);
 			ccTimer.climateChangeIsHappen();
 			popupScript.makeEvent(0, "Climate Change is coming! Scientists have predicted that our carbon emmisions will lead to devastating damages to sea life in a few years! This could slow down the growth of coral reefs soon...");
 		}
 		else if (climateChangeHasWarned && !climateChangeHasHappened && climateChangeTimer.isDone())
 		{
 			climateChangeHasHappened = true;
-			ccOverlay.SetActive(true);
+			// ccOverlay.SetActive(true);
 			popupScript.makeEvent(0, "Climate Change has come! Scientists have determined that the increased temperature and ocean acidity has slowed down coral growth! We have to make a greater effort to coral conservation and rehabilitation!");
 			ApplyClimateChange();
 		}
@@ -525,6 +521,11 @@ public class GameManager : MonoBehaviour
 		}
 		#endregion
 
+		MoveCameraWASD(25f);
+		if (edgeScrollingEnabled) MoveCameraMouseEdge(25f, 10f);
+		ZoomKeys(1.0f);
+		ClampCamera();
+
 		//for (int i = 0; i < 6; i++)
 		//{
 		//    for (int j = 0; j < globalVarContainer.globals[level].maxSpacePerCoral; j++)
@@ -550,10 +551,10 @@ public class GameManager : MonoBehaviour
 		//    }
 		//}
 
-		cncText.text = GetCoralsInNursery() + "/" + globalVarContainer.globals[level].maxSpaceInNursery + " SLOTS LEFT";
+		// cncText.text = GetCoralsInNursery() + "/" + globalVarContainer.globals[level].maxSpaceInNursery + " SLOTS LEFT";
 
 		tempTimer.updateTime();
-		timeLeftText.text = utility.ConvertTimetoMS(tempTimer.currentTime);
+		timeLeftText.text = Utility.ConvertTimetoMS(tempTimer.currentTime);
 		if (tempTimer.isDone())
 		{
 			EndTheGame("The reef could not recover...");
@@ -577,7 +578,7 @@ public class GameManager : MonoBehaviour
 
 	private void EndTheGame(string s)
 	{
-		endGameScript.finalStatistics(fishIncome, utility.ConvertTimetoMS(tempTimer.currentTime));
+		endGameScript.finalStatistics(fishIncome, Utility.ConvertTimetoMS(tempTimer.currentTime));
 		endGameScript.setCongrats((gameIsWon ? gameWinWordArt : gameLoseWordArt));
 		endGameScript.endMessage(s);
 		endGameScript.gameEndReached();
@@ -587,10 +588,11 @@ public class GameManager : MonoBehaviour
 
 	IEnumerator ShowMessage(string text, float time)
 	{
-		feedbackTextText.text = text;
-		feedbackTextText.enabled = true;
+		// feedbackTextText.text = text;
+		// feedbackTextText.enabled = true;
+		Debug.Log(text);
 		yield return new WaitForSeconds(time);
-		feedbackTextText.enabled = false;
+		// feedbackTextText.enabled = false;
 	}
 
 	private void UpdateFishData()
@@ -604,16 +606,16 @@ public class GameManager : MonoBehaviour
 		{
 			if (economyMachine.isAverageGood())
 			{
-				fishImageImage.color = utility.gold;
+				fishImageImage.color = Utility.gold;
 			}
 			else
 			{
-				fishImageImage.color = utility.green;
+				fishImageImage.color = Utility.green;
 			}
 		}
 		else
 		{
-			fishImageImage.color = utility.red;
+			fishImageImage.color = Utility.red;
 		}
 	}
 
@@ -634,7 +636,7 @@ public class GameManager : MonoBehaviour
 			{
 				algaeCells[key].addMaturity(1);
 			}
-			HashSet<Vector3Int> coralsAround = utility.Spread(key, 1);
+			HashSet<Vector3Int> coralsAround = Utility.Spread(key, 1);
 			int weightedCoralMaturity = 0;
 			foreach (Vector3Int pos in coralsAround)
 			{
@@ -672,13 +674,13 @@ public class GameManager : MonoBehaviour
 						if (!groundTileMap.HasTile(localPlace)) continue;
 						if (!substrataTileMap.HasTile(localPlace) || !substrataCells.ContainsKey(localPlace)) continue;
 						if (substrataOverlayTileMap.HasTile(localPlace)) continue;
-						if (!utility.WithinBoardBounds(localPlace, boardSize)) continue;
+						if (!Utility.WithinBoardBounds(localPlace, boardSize)) continue;
 						if (algaeTileMap.HasTile(localPlace) || algaeCells.ContainsKey(localPlace)) continue;
 						// __ECONOMY__ __FIX__ MANUAL OVERRIDE TO CHECK IF ALGAE CAN TAKE OVER
 						if (coralTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace))
 						{
 							int randNum = UnityEngine.Random.Range(0, 101);
-							HashSet<Vector3Int> surrounding = utility.Spread(localPlace, 1);
+							HashSet<Vector3Int> surrounding = Utility.Spread(localPlace, 1);
 							CoralCellData temp;
 							foreach (Vector3Int tempLocation in surrounding)
 							{
@@ -744,7 +746,7 @@ public class GameManager : MonoBehaviour
 		Vector3Int position = GetMouseGridPosition();
 		int readyNum = GetReadyCoralsPerType(type);
 		int loadedNum = GetCoralsPerType(type);
-		if (!utility.WithinBoardBounds(position, boardSize))
+		if (!Utility.WithinBoardBounds(position, boardSize))
 		{
 			FeedbackDialogue("Can't put corals out of bounds!", globalVarContainer.globals[level].feedbackDelayTime);
 		}
@@ -787,7 +789,7 @@ public class GameManager : MonoBehaviour
 		{
 			float minTime = 3600f;
 			// go find the quickest to finish coral
-			string t = "Soonest to mature coral of this type has " + utility.ConvertTimetoMS(minTime) + " time left.";
+			string t = "Soonest to mature coral of this type has " + Utility.ConvertTimetoMS(minTime) + " time left.";
 			FeedbackDialogue(t, globalVarContainer.globals[level].feedbackDelayTime);
 		}
 
@@ -851,7 +853,7 @@ public class GameManager : MonoBehaviour
 						Vector3Int localPlace = key + hexNeighbors[key.y & 1, i];
 						if (!groundTileMap.HasTile(localPlace)) continue;
 						if (!substrataTileMap.HasTile(localPlace) || !substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace)) continue;
-						if (!utility.WithinBoardBounds(localPlace, boardSize)) continue;
+						if (!Utility.WithinBoardBounds(localPlace, boardSize)) continue;
 						if (coralTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || algaeTileMap.HasTile(localPlace)) continue;
 						CoralCellData cell = new CoralCellData(
 							localPlace,
@@ -883,7 +885,7 @@ public class GameManager : MonoBehaviour
 			if (coralCells.Count > 15)
 			{
 				Vector3Int pos = coralCells.ElementAt(UnityEngine.Random.Range(0, coralCells.Count)).Key;
-				HashSet<Vector3Int> removeSpread = utility.Spread(pos, 2);
+				HashSet<Vector3Int> removeSpread = Utility.Spread(pos, 2);
 				foreach (Vector3Int removePos in removeSpread)
 				{
 					if (coralCells.ContainsKey(removePos))
@@ -901,7 +903,7 @@ public class GameManager : MonoBehaviour
 			if (substrataCells.ContainsKey(pos))
 				substrataCells.Remove(pos);
 			substrataTileMap.SetTile(pos, toxicTileBases[UnityEngine.Random.Range(0, toxicTileBases.Length)]);
-			HashSet<Vector3Int> toxicSpread = utility.Spread(pos, 2);
+			HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
 			foreach (Vector3Int toxicPos in toxicSpread)
 			{
 				if (coralCells.ContainsKey(toxicPos))
@@ -997,14 +999,14 @@ public class GameManager : MonoBehaviour
 			zoom += zoomChangeAmount;
 		}
 
-		zoom = Mathf.Clamp(zoom, 5f, 30f);
+		zoom = Mathf.Clamp(zoom, 1f, 5f);
 	}
 
 	private void ClampCamera()
 	{
 		cameraFollowPosition = new Vector3(
-			Mathf.Clamp(cameraFollowPosition.x, -90.0f, 90.0f),
-			Mathf.Clamp(cameraFollowPosition.y, -150.0f, 150.0f),
+			Mathf.Clamp(cameraFollowPosition.x, -22.5f, 22.5f),
+			Mathf.Clamp(cameraFollowPosition.y, -37.5f, 37.5f),
 			cameraFollowPosition.z
 		);
 	}

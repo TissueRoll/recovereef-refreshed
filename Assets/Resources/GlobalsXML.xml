@@ -2,7 +2,7 @@
 <GlobalCollection>
     <Globals>
         <Global level="0">
-            <Zoom>20</Zoom>
+            <Zoom>1</Zoom>
             <UpdateDelay>0.5</UpdateDelay>
             <MaxSpaceInNursery>20</MaxSpaceInNursery>
             <MaxSpacePerCoral>400</MaxSpacePerCoral>
@@ -12,7 +12,7 @@
             <Goal>500</Goal>
         </Global>
         <Global level="1">
-            <Zoom>20</Zoom>
+            <Zoom>1</Zoom>
             <UpdateDelay>0.5</UpdateDelay>
             <MaxSpaceInNursery>20</MaxSpaceInNursery>
             <MaxSpacePerCoral>400</MaxSpacePerCoral>
