@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalCollection>
+    <Globals>
+        <Global level="0">
+            <Zoom>20</Zoom>
+            <UpdateDelay>0.5</UpdateDelay>
+            <MaxSpaceInNursery>20</MaxSpaceInNursery>
+            <MaxSpacePerCoral>400</MaxSpacePerCoral>
+            <FeedbackDelayTime>2.5</FeedbackDelayTime>
+            <MaxGameTime>900</MaxGameTime>
+            <TimeUntilClimateChange>720</TimeUntilClimateChange>
+            <Goal>500</Goal>
+        </Global>
+        <Global level="1">
+            <Zoom>20</Zoom>
+            <UpdateDelay>0.5</UpdateDelay>
+            <MaxSpaceInNursery>20</MaxSpaceInNursery>
+            <MaxSpacePerCoral>400</MaxSpacePerCoral>
+            <FeedbackDelayTime>2.5</FeedbackDelayTime>
+            <MaxGameTime>300</MaxGameTime>
+            <TimeUntilClimateChange>200</TimeUntilClimateChange>
+            <Goal>175</Goal>
+        </Global>
+    </Globals>
+</GlobalCollection>
