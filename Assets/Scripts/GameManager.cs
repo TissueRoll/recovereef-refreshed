@@ -31,12 +31,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject timeLeft;
 	// [SerializeField] private GameObject feedbackText;
 	// [SerializeField] private GameObject CNC;
-	//[SerializeField] private GameObject[] CoralOptions;
 	[SerializeField] private TileBase toxicOverlay;
 	[SerializeField] private GameObject popupCanvas;
-	//[SerializeField] private Sprite emptyRack;
-	//[SerializeField] private Sprite[] smallRack;
-	//[SerializeField] private Sprite[] bigRack;
 	[SerializeField] private GameObject endGameScreen;
 	[SerializeField] private Sprite gameWinWordArt;
 	[SerializeField] private Sprite gameLoseWordArt;
@@ -52,9 +48,7 @@ public class GameManager : MonoBehaviour
 	UnityEngine.UI.Image fishImageImage;
 	TMPro.TextMeshProUGUI timeLeftText;
 	// TMPro.TextMeshProUGUI ccTimerText;
-	ClimateChangeTimer ccTimer;
-	//UnityEngine.UI.Image[,] coralIndicators;
-	//UnityEngine.UI.Image[,] coralRackIndicators;
+	// ClimateChangeTimer ccTimer;
 	// TMPro.TextMeshProUGUI cncText;
 	GameEnd endGameScript;
 	PopupScript popupScript;
@@ -208,14 +202,7 @@ public class GameManager : MonoBehaviour
 	public void ChangeCoral(int select) => selectedCoral = select;
 	private int GetCoralsPerType(int type)
 	{
-		// TODO
-		int result = growingCorals[type].Count;
-		for (int i = 0; i < growingCorals[type].Count; i++)
-		{
-			if (growingCorals[type][i] != null)
-				result += 1;
-		}
-		return result;
+		return growingCorals[type].Count;
 	}
 	private int GetCoralsInNursery()
 	{
@@ -228,13 +215,9 @@ public class GameManager : MonoBehaviour
 	}
 	private int GetReadyCoralsPerType(int type)
 	{
-		// TODO
-		// get ready corals per type: if (growingCorals[type][i].timer.isDone())
-		int ready = growingCorals[type].Count;
+		int ready = 0;
 		for (int i = 0; i < growingCorals[type].Count; i++)
 		{
-			if (growingCorals[type][i] == null)
-				continue;
 			if (growingCorals[type][i].timer.isDone())
 				ready += 1;
 		}
@@ -245,8 +228,6 @@ public class GameManager : MonoBehaviour
 		int index = -1;
 		for (int i = 0; i < growingCorals[type].Count; i++)
 		{
-			if (growingCorals[type][i] == null)
-				continue;
 			if (index == -1 && growingCorals[type][i].timer.isDone())
 				index = i;
 		}
@@ -308,7 +289,7 @@ public class GameManager : MonoBehaviour
 		growingCorals = new List<NursingCoral>[totalCoralTypes];
 		for (int i = 0; i < totalCoralTypes; i++)
 		{
-			growingCorals[i] = new List<NursingCoral>() { null, null, null, null };
+			growingCorals[i] = new List<NursingCoral>();
 		}
 		markedToDieCoral = new List<Vector3Int>();
 
@@ -339,6 +320,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
+		// assigning the borders of the level
 		for (int i = boardSize + 1; i <= boardSize + 5; i++)
 		{
 			for (int j = -boardSize - 5; j <= boardSize + 5; j++)
@@ -463,7 +445,7 @@ public class GameManager : MonoBehaviour
 		{
 			climateChangeHasWarned = true;
 			// ccTimerImage.transform.Find("CCTimeLeft").gameObject.SetActive(true);
-			ccTimer.climateChangeIsHappen();
+			// ccTimer.climateChangeIsHappen();
 			popupScript.makeEvent(0, "Climate Change is coming! Scientists have predicted that our carbon emmisions will lead to devastating damages to sea life in a few years! This could slow down the growth of coral reefs soon...");
 		}
 		else if (climateChangeHasWarned && !climateChangeHasHappened && climateChangeTimer.isDone())
@@ -526,30 +508,13 @@ public class GameManager : MonoBehaviour
 		ZoomKeys(1.0f);
 		ClampCamera();
 
-		//for (int i = 0; i < 6; i++)
-		//{
-		//    for (int j = 0; j < globalVarContainer.globals[level].maxSpacePerCoral; j++)
-		//    {
-		//        Sprite currentPositionSprite = coralRackIndicators[i, j].sprite;
-		//        if (growingCorals[i][j] == null)
-		//        {
-		//            coralIndicators[i, j].color = progressNone;
-		//            if (currentPositionSprite.name != emptyRack.name)
-		//                coralRackIndicators[i, j].sprite = emptyRack;
-		//            continue;
-		//        }
-		//        growingCorals[i][j].timer.updateTime();
-		//        bool currentCoralDone = growingCorals[i][j].timer.isDone();
-		//        if (!currentCoralDone)
-		//            coralIndicators[i, j].color = Color.Lerp(progressZero, progressIsDone, growingCorals[i][j].timer.percentComplete);
-		//        else if (currentCoralDone && coralIndicators[i, j].color != progressDefinitelyDone)
-		//            coralIndicators[i, j].color = progressDefinitelyDone;
-		//        if (currentCoralDone && currentPositionSprite.name != bigRack[i].name)
-		//            coralRackIndicators[i, j].sprite = bigRack[i];
-		//        else if (!currentCoralDone && currentPositionSprite.name != smallRack[i].name)
-		//            coralRackIndicators[i, j].sprite = smallRack[i];
-		//    }
-		//}
+		for (int type = 0; type < totalCoralTypes; type++)
+		{
+			foreach (NursingCoral coralTmp in growingCorals[type])
+			{
+				coralTmp.timer.updateTime();
+			}
+		}
 
 		// cncText.text = GetCoralsInNursery() + "/" + globalVarContainer.globals[level].maxSpaceInNursery + " SLOTS LEFT";
 
@@ -731,8 +696,7 @@ public class GameManager : MonoBehaviour
 		bool spaceInNursery = GetCoralsInNursery() < globalVarContainer.globals[level].maxSpaceInNursery;
 		if (spaceInNursery)
 		{
-			// add it to the list of growing corals
-			// growingCorals[type][nullIdx] = new NursingCoral(coralBaseData.corals[type].name, new CountdownTimer(coralBaseData.corals[type].growTime));
+			growingCorals[type].Add(new NursingCoral(coralBaseData.corals[type].name, new CountdownTimer(coralBaseData.corals[type].growTime)));
 		}
 		else if (!spaceInNursery)
 		{
@@ -740,6 +704,9 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	/*
+	 * removing coral
+	 * */
 	private bool PlantCoral(int type)
 	{
 		bool successful = false;
@@ -770,7 +737,7 @@ public class GameManager : MonoBehaviour
 			if (tempIdx != -1)
 			{
 				tempCoral = growingCorals[type][tempIdx];
-				growingCorals[type][tempIdx] = null;
+				growingCorals[type].RemoveAt(tempIdx);
 			}
 			CoralCellData cell = new CoralCellData(
 				position,
@@ -789,6 +756,10 @@ public class GameManager : MonoBehaviour
 		{
 			float minTime = 3600f;
 			// go find the quickest to finish coral
+			for (int i = 0; i < growingCorals[type].Count; i++)
+			{
+				minTime = Math.Min(minTime, growingCorals[type][i].timer.currentTime);
+			}
 			string t = "Soonest to mature coral of this type has " + Utility.ConvertTimetoMS(minTime) + " time left.";
 			FeedbackDialogue(t, globalVarContainer.globals[level].feedbackDelayTime);
 		}
