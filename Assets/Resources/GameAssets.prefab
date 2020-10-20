@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8453505900617352430
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6321041013115795304}
+  - component: {fileID: 1462763156635242233}
+  m_Layer: 0
+  m_Name: GameAssets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6321041013115795304
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8453505900617352430}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7744408, y: 5.5434175, z: -24.582031}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1462763156635242233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8453505900617352430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1722fd72201ae94e8fdb65d43cc10cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coralTileBases:
+  - {fileID: 11400000, guid: fa792e6dc5808694c85a8657778418dc, type: 2}
+  - {fileID: 11400000, guid: c37f70dddbfba5843866cce183486ed8, type: 2}
+  - {fileID: 11400000, guid: 821d234db3fa4174eae95796f342912c, type: 2}
+  coralDeadTileBases:
+  - {fileID: 11400000, guid: e04f48e6cdc1d09429563b0c36f878d7, type: 2}
+  - {fileID: 11400000, guid: c0cf0f9efdaaf2540b0972abd3542832, type: 2}
+  - {fileID: 11400000, guid: 3cd9981cc9621c04ca79e7045ccc17ad, type: 2}
+  groundTileBases:
+  - {fileID: 11400000, guid: 7d74c5fc43697214db698aa8fc1087c8, type: 2}
+  - {fileID: 11400000, guid: 1918d687c7df3c3498d1445cf0c71f45, type: 2}
+  - {fileID: 11400000, guid: ac9ca3f18b6bff44485e2b1fced5f84d, type: 2}
+  algaeTileBases:
+  - {fileID: 11400000, guid: 761f3867fbe34e44d96d85219c5bc082, type: 2}
+  - {fileID: 11400000, guid: e833474174ce2654aacd008798ee7e93, type: 2}
+  substrataTileBases:
+  - {fileID: 11400000, guid: c72eea2b7eec6d14990f97427e15de30, type: 2}
+  - {fileID: 11400000, guid: 271a09b3983f89646a34278635442028, type: 2}
+  - {fileID: 11400000, guid: 3f7ef164fdfbba74186ae48483a2f1c6, type: 2}
+  - {fileID: 11400000, guid: 94fd75259a2e97b4392f9e5fdba510bb, type: 2}
+  - {fileID: 11400000, guid: d572d944b6deabe4bae4571f8c6968b8, type: 2}
+  - {fileID: 11400000, guid: 3d95ac1b12780054cad58aef83d6f7e4, type: 2}
+  toxicTileBases:
+  - {fileID: 11400000, guid: b9a8c3716a840364cb328dd680e24706, type: 2}
+  - {fileID: 11400000, guid: 0ff12cb47d3722b458ed6a25c8c71976, type: 2}
+  - {fileID: 11400000, guid: 64961ec9895de6749965465d9dff6b51, type: 2}
+  algaeEdgeTileBase: {fileID: 11400000, guid: d469a8aebea22b44b8fa2922b2488c83, type: 2}
+  toxicOverlay: {fileID: 11400000, guid: df6e529984aa9a945a8d3cc8d6dd2997, type: 2}
+  gameWinWordArt: {fileID: 21300000, guid: 69fdf195e8e82954ba56a41569ce27f7, type: 3}
+  gameLoseWordArt: {fileID: 21300000, guid: 612e1d22906d2314686e1a2d07f26073, type: 3}
+  defaultPopupSprite: {fileID: 21300000, guid: 6033bd1fc796d6c40a56000b1e722ebd, type: 3}
+  toxicWasteDisasterSprite: {fileID: 21300000, guid: 6033bd1fc796d6c40a56000b1e722ebd,
+    type: 3}
+  touristsDisasterSprite: {fileID: 21300000, guid: 6033bd1fc796d6c40a56000b1e722ebd,
+    type: 3}
+  bombingDisasterSprite: {fileID: 21300000, guid: 6033bd1fc796d6c40a56000b1e722ebd,
+    type: 3}
+  climateChangeDisasterSprite: {fileID: 21300000, guid: 836e2268bc22329429c19be49d9223a5,
+    type: 3}
+  normalButtonSprite: {fileID: 21300000, guid: b9c598904df87c14c867cebf6a600058, type: 3}
+  climateButtonSprite: {fileID: 21300000, guid: ee68c950808e2f44d80dd19322fdabfb,
+    type: 3}

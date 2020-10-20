@@ -10,14 +10,6 @@ public class PopupScript : MonoBehaviour
 	public GameObject outText;
 	public UnityEngine.UI.Image popupSprite;
 	public UnityEngine.UI.Button popupButton;
-	[SerializeField] private Sprite defaultSprite;
-	[SerializeField] private Sprite toxicWaste;
-	[SerializeField] private Sprite tourists;
-	[SerializeField] private Sprite bombing;
-	[SerializeField] private Sprite climateChange;
-	[SerializeField] private Sprite normalButton;
-	[SerializeField] private Sprite climateButton;
-
 
 	void Update()
 	{
@@ -39,31 +31,31 @@ public class PopupScript : MonoBehaviour
 
 	public void makeEvent(int type, string forced = "")
 	{
-		popupButton.GetComponent<UnityEngine.UI.Image>().sprite = normalButton;
+		popupButton.GetComponent<UnityEngine.UI.Image>().sprite = Assets.instance.normalButtonSprite;
 		if (forced.Length > 0)
 		{
-			SetPopupSprite(climateChange);
+			SetPopupSprite(Assets.instance.climateChangeDisasterSprite);
 			SetPopupMessage(forced);
-			popupButton.GetComponent<UnityEngine.UI.Image>().sprite = climateButton;
+			popupButton.GetComponent<UnityEngine.UI.Image>().sprite = Assets.instance.climateButtonSprite;
 		}
 		else if (type == 1)
 		{ // toxic waste
-			SetPopupSprite(toxicWaste);
+			SetPopupSprite(Assets.instance.toxicWasteDisasterSprite);
 			SetPopupMessage("An irresponsible company just dumped a barrel of toxic waste into your coral reef! Part of your reef has now become permanently affected.");
 		}
 		else if (type == 2)
 		{ // tourists
-			SetPopupSprite(tourists);
+			SetPopupSprite(Assets.instance.touristsDisasterSprite);
 			SetPopupMessage("A group of tourists came and vandalized part of your reef, not knowing corals are animals. Part of your coral population has died.");
 		}
 		else if (type == 3)
 		{ // bombing
-			SetPopupSprite(bombing);
+			SetPopupSprite(Assets.instance.bombingDisasterSprite);
 			SetPopupMessage("Fishermen have just thrown bombs into your reef in the hopes of catching some fish! Some of your corals have died.");
 		}
 		else
 		{ // UNKNOWN EVENT
-			SetPopupSprite(defaultSprite);
+			SetPopupSprite(Assets.instance.defaultPopupSprite);
 			SetPopupMessage("An event has happened.");
 		}
 		OpenPopup();

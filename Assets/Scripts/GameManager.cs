@@ -19,23 +19,13 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private Tilemap substrataTileMap;
 	[SerializeField] private Tilemap substrataOverlayTileMap;
 	[SerializeField] private Tilemap algaeTileMap;
-	[SerializeField] private TileBase[] coralTileBases;
-	[SerializeField] private TileBase[] coralDeadTileBases;
-	[SerializeField] private TileBase[] groundTileBases;
-	[SerializeField] private TileBase[] algaeTileBases;
-	[SerializeField] private TileBase[] substrataTileBases;
-	[SerializeField] private TileBase[] toxicTileBases;
-	[SerializeField] private TileBase algaeEdgeTileBase;
 	[SerializeField] private GameObject fishDisplay;
 	[SerializeField] private GameObject fishImage;
 	[SerializeField] private GameObject timeLeft;
 	// [SerializeField] private GameObject feedbackText;
 	// [SerializeField] private GameObject CNC;
-	[SerializeField] private TileBase toxicOverlay;
 	[SerializeField] private GameObject popupCanvas;
 	[SerializeField] private GameObject endGameScreen;
-	[SerializeField] private Sprite gameWinWordArt;
-	[SerializeField] private Sprite gameLoseWordArt;
 	// [SerializeField] private GameObject ccTimerImage;
 	// [SerializeField] private GameObject ccOverlay;
 	[SerializeField] private int level;
@@ -321,7 +311,7 @@ public class GameManager : MonoBehaviour
 				HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
 				foreach (Vector3Int toxicPos in toxicSpread)
 				{
-					substrataOverlayTileMap.SetTile(toxicPos, toxicOverlay);
+					substrataOverlayTileMap.SetTile(toxicPos, Assets.instance.toxicOverlay);
 				}
 			}
 			else
@@ -335,10 +325,10 @@ public class GameManager : MonoBehaviour
 		{
 			for (int j = -boardSize - 5; j <= boardSize + 5; j++)
 			{
-				substrataOverlayTileMap.SetTile(new Vector3Int(j, i, 0), algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(j, -i, 0), algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(i, j, 0), algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(-i, j, 0), algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(j, i, 0), Assets.instance.algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(j, -i, 0), Assets.instance.algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(i, j, 0), Assets.instance.algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(-i, j, 0), Assets.instance.algaeEdgeTileBase);
 			}
 		}
 
@@ -566,7 +556,7 @@ public class GameManager : MonoBehaviour
 	private void EndTheGame(string s)
 	{
 		endGameScript.finalStatistics(fishIncome, Utility.ConvertTimetoMS(tempTimer.currentTime));
-		endGameScript.setCongrats((gameIsWon ? gameWinWordArt : gameLoseWordArt));
+		endGameScript.setCongrats((gameIsWon ? Assets.instance.gameWinWordArt : Assets.instance.gameLoseWordArt));
 		endGameScript.endMessage(s);
 		endGameScript.gameEndReached();
 	}
@@ -762,7 +752,7 @@ public class GameManager : MonoBehaviour
 			CoralCellData cell = new CoralCellData(
 				position,
 				coralTileMap,
-				coralTileBases[type],
+				Assets.instance.coralTileBases[type],
 				0,
 				coralBaseData.corals[type]
 			);
@@ -770,7 +760,7 @@ public class GameManager : MonoBehaviour
 			cfTotalProduction += coralCells[position].coralData.cfProduction;
 			hfTotalProduction += coralCells[position].coralData.hfProduction;
 			coralTypeNumbers[type]++;
-			coralTileMap.SetTile(position, coralTileBases[type]);
+			coralTileMap.SetTile(position, Assets.instance.coralTileBases[type]);
 		}
 		else if (readyNum == 0 && loadedNum - readyNum > 0)
 		{
@@ -803,7 +793,7 @@ public class GameManager : MonoBehaviour
 				if (!economyMachine.coralWillSurvive(coralCells[key], substrataCells[key], miscFactors - coralSurvivabilityDebuff, groundTileMap.GetTile(key).name))
 				{
 					// setting data
-					coralTileMap.SetTile(key, coralDeadTileBases[FindIndexOfEntityFromName(coralCells[key].TileBase.name)]);
+					coralTileMap.SetTile(key, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[key].TileBase.name)]);
 					markedToDieCoral.Add(key);
 				}
 			}
@@ -880,7 +870,7 @@ public class GameManager : MonoBehaviour
 					if (coralCells.ContainsKey(removePos))
 					{
 						markedToDieCoral.Add(removePos); // __TIMING__
-						coralTileMap.SetTile(removePos, coralDeadTileBases[FindIndexOfEntityFromName(coralCells[removePos].TileBase.name)]);
+						coralTileMap.SetTile(removePos, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[removePos].TileBase.name)]);
 					}
 				}
 				popupScript.makeEvent(UnityEngine.Random.Range(2, 4));
@@ -891,21 +881,21 @@ public class GameManager : MonoBehaviour
 			Vector3Int pos = new Vector3Int(UnityEngine.Random.Range(-boardSize, boardSize + 1), UnityEngine.Random.Range(-boardSize, boardSize + 1), 0);
 			if (substrataCells.ContainsKey(pos))
 				substrataCells.Remove(pos);
-			substrataTileMap.SetTile(pos, toxicTileBases[UnityEngine.Random.Range(0, toxicTileBases.Length)]);
+			substrataTileMap.SetTile(pos, Assets.instance.toxicTileBases[UnityEngine.Random.Range(0, Assets.instance.toxicTileBases.Length)]);
 			HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
 			foreach (Vector3Int toxicPos in toxicSpread)
 			{
 				if (coralCells.ContainsKey(toxicPos))
 				{
 					markedToDieCoral.Add(toxicPos); // __TIMING__
-					coralTileMap.SetTile(toxicPos, coralDeadTileBases[FindIndexOfEntityFromName(coralCells[toxicPos].TileBase.name)]);
+					coralTileMap.SetTile(toxicPos, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[toxicPos].TileBase.name)]);
 				}
 				if (algaeCells.ContainsKey(toxicPos))
 				{
 					algaeCells.Remove(toxicPos);
 					algaeTileMap.SetTile(toxicPos, null);
 				}
-				substrataOverlayTileMap.SetTile(toxicPos, toxicOverlay);
+				substrataOverlayTileMap.SetTile(toxicPos, Assets.instance.toxicOverlay);
 			}
 			popupScript.makeEvent(1);
 		}
