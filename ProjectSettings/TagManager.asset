@@ -38,6 +38,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Ground
+    uniqueID: 822234145
+    locked: 0
+  - name: Substrata
+    uniqueID: 3153880877
+    locked: 0
+  - name: Corals
+    uniqueID: 3923173335
+    locked: 0
+  - name: Algae
+    uniqueID: 1550446237
+    locked: 0
+  - name: Substrata_Overlay
+    uniqueID: 4186096323
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

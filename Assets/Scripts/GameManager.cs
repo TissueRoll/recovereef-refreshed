@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour
 	private List<int> coralTypeNumbers;
 	private Vector2 resolution;
 	private int totalCoralTypes = 3;
+	private bool shovelChosen = false;
 	#endregion
 
 	#region Generic Helper Functions
@@ -199,7 +200,16 @@ public class GameManager : MonoBehaviour
 			print("ERROR: Entity not found");
 		return index;
 	}
-	public void ChangeCoral(int select) => selectedCoral = select;
+	public void ChangeCoral(int select)
+	{
+		selectedCoral = select;
+		shovelChosen = false;
+	}
+	public void SelectShovel()
+	{
+		selectedCoral = 3;
+		shovelChosen = true;
+	}
 	private int GetCoralsPerType(int type)
 	{
 		return growingCorals[type].Count;
@@ -461,14 +471,17 @@ public class GameManager : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			GrowCoral(0);
+			ChangeCoral(0);
 		}
 		else if (Input.GetKeyDown(KeyCode.Alpha2))
 		{
 			GrowCoral(1);
+			ChangeCoral(1);
 		}
 		else if (Input.GetKeyDown(KeyCode.Alpha3))
 		{
 			GrowCoral(2);
+			ChangeCoral(2);
 		}
 
 		if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.Z))
@@ -483,14 +496,23 @@ public class GameManager : MonoBehaviour
 		{
 			ChangeCoral(2);
 		}
+
+		if (Input.GetKeyDown(KeyCode.R))
+		{
+			SelectShovel();
+		}
 		#endregion
 
 		bool rb = Input.GetMouseButtonDown(1);
 		if (rb)
 		{
-			if (!PlantCoral(selectedCoral))
+			if (shovelChosen)
 			{
-				// feedbackDialogue("Cannot plant coral onto the reef", 1);
+				ShovelArea();
+			}
+			else
+			{
+				PlantCoral(selectedCoral);
 			}
 		}
 
@@ -707,9 +729,8 @@ public class GameManager : MonoBehaviour
 	/*
 	 * removing coral
 	 * */
-	private bool PlantCoral(int type)
+	private void PlantCoral(int type)
 	{
-		bool successful = false;
 		Vector3Int position = GetMouseGridPosition();
 		int readyNum = GetReadyCoralsPerType(type);
 		int loadedNum = GetCoralsPerType(type);
@@ -731,7 +752,6 @@ public class GameManager : MonoBehaviour
 		}
 		else if ((substrataTileMap.HasTile(position) || substrataCells.ContainsKey(position)) && readyNum > 0)
 		{
-			successful = true;
 			int tempIdx = GetIndexOfReadyCoral(type);
 			NursingCoral tempCoral = null;
 			if (tempIdx != -1)
@@ -763,8 +783,6 @@ public class GameManager : MonoBehaviour
 			string t = "Soonest to mature coral of this type has " + Utility.ConvertTimetoMS(minTime) + " time left.";
 			FeedbackDialogue(t, globalVarContainer.globals[level].feedbackDelayTime);
 		}
-
-		return successful;
 	}
 	private void UpdateCoralSurvivability()
 	{
@@ -892,6 +910,35 @@ public class GameManager : MonoBehaviour
 			popupScript.makeEvent(1);
 		}
 	}
+	private void ShovelArea()
+	{
+		Vector3Int position = GetMouseGridPosition();
+		if (!Utility.WithinBoardBounds(position, boardSize))
+		{
+			// not allowed
+		}
+		else if (coralTileMap.HasTile(position))
+		{
+			// not allowed
+		}
+		else if (algaeTileMap.HasTile(position))
+		{
+			// allowed
+			HashSet<Vector3Int> spread = Utility.Spread(position, 2);
+			foreach (Vector3Int location in spread)
+			{
+				if (algaeTileMap.HasTile(location))
+				{
+					algaeTileMap.SetTile(location, null);
+					algaeCells.Remove(location);
+				}
+			}
+		}
+		else
+		{
+			// not allowed
+		}
+	}
 	// __ECONOMY__
 	private void ApplyClimateChange()
 	{
@@ -976,8 +1023,8 @@ public class GameManager : MonoBehaviour
 	private void ClampCamera()
 	{
 		cameraFollowPosition = new Vector3(
-			Mathf.Clamp(cameraFollowPosition.x, -22.5f, 22.5f),
-			Mathf.Clamp(cameraFollowPosition.y, -37.5f, 37.5f),
+			Mathf.Clamp(cameraFollowPosition.x, -11.25f, 11.25f),
+			Mathf.Clamp(cameraFollowPosition.y, -18.75f, 18.75f),
 			cameraFollowPosition.z
 		);
 	}
