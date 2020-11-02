@@ -233,6 +233,34 @@ public class GameManager : MonoBehaviour
 		}
 		return index;
 	}
+	private void AddCoral(Vector3Int localPlace, int maturity)
+	{
+		TileBase currentTB = coralTileMap.GetTile(localPlace);
+		CoralCellData cell = new CoralCellData(
+			localPlace,
+			coralTileMap,
+			currentTB,
+			maturity,
+			coralBaseData.corals[FindIndexOfEntityFromName(currentTB.name)]
+		);
+		cfTotalProduction += cell.coralData.cfProduction;
+		hfTotalProduction += cell.coralData.hfProduction;
+		coralTypeNumbers[FindIndexOfEntityFromName(currentTB.name)]++;
+		coralCells.Add(cell.LocalPlace, cell);
+	}
+	private void AddAlgae(Vector3Int localPlace, int maturity)
+	{
+		TileBase currentTB = algaeTileMap.GetTile(localPlace);
+		AlgaeCellData cell = new AlgaeCellData(
+			localPlace,
+			algaeTileMap,
+			currentTB,
+			maturity,
+			algaeDataContainer.algae[FindIndexOfEntityFromName(currentTB.name)]
+		);
+		hfTotalProduction += cell.algaeData.hfProduction;
+		algaeCells.Add(cell.LocalPlace, cell);
+	}
 	#endregion
 
 	void Awake()
@@ -343,18 +371,7 @@ public class GameManager : MonoBehaviour
 				coralTileMap.SetTile(localPlace, null);
 				continue;
 			}
-			TileBase currentTB = coralTileMap.GetTile(localPlace);
-			CoralCellData cell = new CoralCellData(
-				localPlace,
-				coralTileMap,
-				currentTB,
-				26,
-				coralBaseData.corals[FindIndexOfEntityFromName(currentTB.name)]
-			);
-			cfTotalProduction += cell.coralData.cfProduction;
-			hfTotalProduction += cell.coralData.hfProduction;
-			coralTypeNumbers[FindIndexOfEntityFromName(currentTB.name)]++;
-			coralCells.Add(cell.LocalPlace, cell);
+			AddCoral(localPlace, 26);
 		}
 
 		foreach (Vector3Int pos in algaeTileMap.cellBounds.allPositionsWithin)
@@ -367,16 +384,7 @@ public class GameManager : MonoBehaviour
 				algaeTileMap.SetTile(localPlace, null);
 				continue;
 			}
-			TileBase currentTB = algaeTileMap.GetTile(localPlace);
-			AlgaeCellData cell = new AlgaeCellData(
-				localPlace,
-				algaeTileMap,
-				currentTB,
-				26,
-				algaeDataContainer.algae[FindIndexOfEntityFromName(currentTB.name)]
-			);
-			hfTotalProduction += cell.algaeData.hfProduction;
-			algaeCells.Add(cell.LocalPlace, cell);
+			AddAlgae(localPlace, 26);
 		}
 	}
 
@@ -624,6 +632,7 @@ public class GameManager : MonoBehaviour
 			}
 			if (!economyMachine.algaeWillSurvive(algaeCells[key], substrataCells[key], -3 * weightedCoralMaturity / 2 + coralSurvivabilityDebuff))
 			{
+				// __BUG; ALGAE CONTRIB NOT SUBTRACTED, __DECOMPOSE
 				algaeTileMap.SetTile(key, null);
 				algaeCells.Remove(key);
 			}
@@ -668,7 +677,7 @@ public class GameManager : MonoBehaviour
 							}
 							if (randNum < 60) continue;
 						}
-						// adding algae
+						// adding algae __DECOMPOSE
 						AlgaeCellData cell = new AlgaeCellData(
 							localPlace,
 							algaeTileMap,
@@ -682,6 +691,7 @@ public class GameManager : MonoBehaviour
 						// delete coral under algae
 						if (coralTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace))
 						{
+							// __DECOMPOSE
 							coralTileMap.SetTile(localPlace, null);
 							hfTotalProduction -= coralCells[localPlace].coralData.hfProduction;
 							cfTotalProduction -= coralCells[localPlace].coralData.cfProduction;
@@ -749,6 +759,7 @@ public class GameManager : MonoBehaviour
 				tempCoral = growingCorals[type][tempIdx];
 				growingCorals[type].RemoveAt(tempIdx);
 			}
+			// __DECOMPOSE
 			CoralCellData cell = new CoralCellData(
 				position,
 				coralTileMap,
@@ -809,6 +820,7 @@ public class GameManager : MonoBehaviour
 		{
 			if (!coralCells.ContainsKey(key))
 				continue;
+			// __DECOMPOSE
 			coralTileMap.SetTile(key, null);
 			hfTotalProduction -= coralCells[key].coralData.hfProduction;
 			cfTotalProduction -= coralCells[key].coralData.cfProduction;
@@ -834,6 +846,7 @@ public class GameManager : MonoBehaviour
 						if (!substrataTileMap.HasTile(localPlace) || !substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace)) continue;
 						if (!Utility.WithinBoardBounds(localPlace, boardSize)) continue;
 						if (coralTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || algaeTileMap.HasTile(localPlace)) continue;
+						// __DECOMPOSE
 						CoralCellData cell = new CoralCellData(
 							localPlace,
 							coralTileMap,
@@ -892,6 +905,7 @@ public class GameManager : MonoBehaviour
 				}
 				if (algaeCells.ContainsKey(toxicPos))
 				{
+					// __BUG, __DECOMPOSE
 					algaeCells.Remove(toxicPos);
 					algaeTileMap.SetTile(toxicPos, null);
 				}
@@ -919,6 +933,7 @@ public class GameManager : MonoBehaviour
 			{
 				if (algaeTileMap.HasTile(location))
 				{
+					// __BUG, __DECOMPOSE
 					algaeTileMap.SetTile(location, null);
 					algaeCells.Remove(location);
 				}
