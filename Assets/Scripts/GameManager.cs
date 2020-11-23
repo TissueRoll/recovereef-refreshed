@@ -656,7 +656,7 @@ public class GameManager : MonoBehaviour
 			hfTotalProduction -= cell.coralData.hfProduction;
 			coralTypeNumbers[FindIndexOfEntityFromName(cell.TileBase.name)]++;
 			coralCells.Remove(position);
-			algaeTileMap.SetTile(position, null);
+			coralTileMap.SetTile(position, null);
 		}
 	}
 
@@ -676,8 +676,6 @@ public class GameManager : MonoBehaviour
 		UpdateAlgaeSurvivability();
 		UpdateAlgaePropagation();
 	}
-
-	
 
 	private void UpdateAlgaeSurvivability()
 	{
