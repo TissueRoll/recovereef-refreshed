@@ -110,6 +110,7 @@ public class GameManager : MonoBehaviour
 	}
 	#endregion
 	#region Game-Specific Helper Functions
+	// __STYLE: maybe use some kind of .Find(delegate/funcptr) thing to make this cleaner
 	private int FindIndexOfEntityFromType(string code, string type)
 	{
 		int index = -1;
@@ -150,6 +151,7 @@ public class GameManager : MonoBehaviour
 			print("ERROR: Entity not found");
 		return index;
 	}
+	// __STYLE: maybe use some kind of .Find(delegate/funcptr) thing to make this cleaner
 	private int FindIndexOfEntityFromName(string nameOfTileBase)
 	{
 		int index = -1;
@@ -216,13 +218,16 @@ public class GameManager : MonoBehaviour
 	private int GetReadyCoralsPerType(int type)
 	{
 		int ready = 0;
-		for (int i = 0; i < growingCorals[type].Count; i++)
+		foreach (NursingCoral growingCoral in growingCorals[type])
 		{
-			if (growingCorals[type][i].timer.isDone())
-				ready += 1;
+			if (growingCoral.timer.isDone())
+				ready++;
 		}
 		return ready;
 	}
+	/*
+	 * Programmer note: by nature of the new system, the ready coral is ALWAYS in front of the list
+	 */
 	private int GetIndexOfReadyCoral(int type)
 	{
 		int index = -1;
@@ -233,33 +238,69 @@ public class GameManager : MonoBehaviour
 		}
 		return index;
 	}
-	private void AddCoral(Vector3Int localPlace, int maturity)
+	/*
+	 * Adds an algae on the map if possible
+	 */
+	private void AddAlgaeOnMap(Vector3Int position, TileBase tileBase, int maturity)
 	{
-		TileBase currentTB = coralTileMap.GetTile(localPlace);
-		CoralCellData cell = new CoralCellData(
-			localPlace,
-			coralTileMap,
-			currentTB,
-			maturity,
-			coralBaseData.corals[FindIndexOfEntityFromName(currentTB.name)]
-		);
+		int type = FindIndexOfEntityFromName(tileBase.name);
+		AlgaeCellData cell = new AlgaeCellData(position, algaeTileMap, tileBase, maturity, algaeDataContainer.algae[type]);
+		hfTotalProduction += cell.algaeData.hfProduction;
+		algaeCells.Add(position, cell);
+		algaeTileMap.SetTile(position, tileBase);
+	}
+
+	/*
+	 * Adds a coral on the map if possible
+	 */
+	private void AddCoralOnMap(Vector3Int position, TileBase tileBase, int maturity)
+	{
+		int type = FindIndexOfEntityFromName(tileBase.name);
+		CoralCellData cell = new CoralCellData(position, coralTileMap, tileBase, maturity, coralBaseData.corals[type]);
 		cfTotalProduction += cell.coralData.cfProduction;
 		hfTotalProduction += cell.coralData.hfProduction;
-		coralTypeNumbers[FindIndexOfEntityFromName(currentTB.name)]++;
-		coralCells.Add(cell.LocalPlace, cell);
+		coralTypeNumbers[type]++;
+		coralCells.Add(position, cell);
+		coralTileMap.SetTile(position, tileBase);
 	}
-	private void AddAlgae(Vector3Int localPlace, int maturity)
+
+	/*
+	 * Removes algae on map if it exists
+	 */
+	private void RemoveAlgaeOnMap(Vector3Int position)
 	{
-		TileBase currentTB = algaeTileMap.GetTile(localPlace);
-		AlgaeCellData cell = new AlgaeCellData(
-			localPlace,
-			algaeTileMap,
-			currentTB,
-			maturity,
-			algaeDataContainer.algae[FindIndexOfEntityFromName(currentTB.name)]
-		);
-		hfTotalProduction += cell.algaeData.hfProduction;
-		algaeCells.Add(cell.LocalPlace, cell);
+		if (algaeCells.ContainsKey(position) && algaeTileMap.HasTile(position))
+		{
+			AlgaeCellData cell = algaeCells[position];
+			hfTotalProduction -= cell.algaeData.hfProduction;
+			algaeCells.Remove(position);
+			algaeTileMap.SetTile(position, null);
+		}
+	}
+
+	/*
+	 * Removes coral on map if it exists
+	 */
+	private void RemoveCoralOnMap(Vector3Int position)
+	{
+		if (coralCells.ContainsKey(position) && coralTileMap.HasTile(position))
+		{
+			CoralCellData cell = coralCells[position];
+			cfTotalProduction -= cell.coralData.cfProduction;
+			hfTotalProduction -= cell.coralData.hfProduction;
+			coralTypeNumbers[FindIndexOfEntityFromName(cell.TileBase.name)]++;
+			coralCells.Remove(position);
+			coralTileMap.SetTile(position, null);
+		}
+	}
+
+	private bool SpaceIsAvailable(Vector3Int position)
+	{
+		if (!groundTileMap.HasTile(position)) return false;
+		if (!(substrataTileMap.HasTile(position) && substrataCells.ContainsKey(position))) return false;
+		if (substrataOverlayTileMap.HasTile(position)) return false;
+		if (!Utility.WithinBoardBounds(position, boardSize)) return false;
+		return true;
 	}
 	#endregion
 
@@ -288,7 +329,7 @@ public class GameManager : MonoBehaviour
 		coralTypeNumbers = new List<int>();
 		for (int i = 0; i < totalCoralTypes; ++i)
 		{
-			coralTypeNumbers.Add(i);
+			coralTypeNumbers.Add(0); // __WHAT: used to be Add(i)... but i think it should be Add(0)
 		}
 		InitializeTiles();
 		print("initialization done");
@@ -325,26 +366,28 @@ public class GameManager : MonoBehaviour
 		// Setting the substrata data
 		foreach (Vector3Int pos in substrataTileMap.cellBounds.allPositionsWithin)
 		{
-			Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
-			if (!substrataTileMap.HasTile(localPlace)) continue;
-			if (!Utility.WithinBoardBounds(localPlace, boardSize))
+			if (!substrataTileMap.HasTile(pos)) continue; // does this case even happen???
+			if (!Utility.WithinBoardBounds(pos, boardSize))
 			{
-				substrataTileMap.SetTile(localPlace, null);
-				continue;
-			}
-			TileBase currentTB = substrataTileMap.GetTile(pos);
-			int idx = FindIndexOfEntityFromName(currentTB.name);
-			if (idx == -1)
-			{ // UNKNOWN TILE; FOR NOW TOXIC
-				HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
-				foreach (Vector3Int toxicPos in toxicSpread)
-				{
-					substrataOverlayTileMap.SetTile(toxicPos, Assets.instance.toxicOverlay);
-				}
+				substrataTileMap.SetTile(pos, null);
 			}
 			else
 			{
-				substrataCells.Add(localPlace, substrataDataContainer.substrata[idx].groundViability);
+				// __FIX: hacky way of doing it
+				TileBase currentTB = substrataTileMap.GetTile(pos);
+				int idx = FindIndexOfEntityFromName(currentTB.name);
+				if (idx == -1)
+				{ // UNKNOWN TILE; FOR NOW TOXIC
+					HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
+					foreach (Vector3Int toxicPos in toxicSpread)
+					{
+						substrataOverlayTileMap.SetTile(toxicPos, Assets.instance.toxicOverlay);
+					}
+				}
+				else
+				{
+					substrataCells.Add(pos, substrataDataContainer.substrata[idx].groundViability);
+				}
 			}
 		}
 
@@ -363,28 +406,28 @@ public class GameManager : MonoBehaviour
 		// Setting the tiles in the tilemap to the coralCells dictionary
 		foreach (Vector3Int pos in coralTileMap.cellBounds.allPositionsWithin)
 		{
-			Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
-			if (!groundTileMap.HasTile(localPlace)) continue;
-			if (!coralTileMap.HasTile(localPlace)) continue;
-			if (!substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace) || !Utility.WithinBoardBounds(localPlace, boardSize))
+			if (!coralTileMap.HasTile(pos)) continue; // does this case even happen???
+			if (!SpaceIsAvailable(pos))
 			{
-				coralTileMap.SetTile(localPlace, null);
-				continue;
+				coralTileMap.SetTile(pos, null);
 			}
-			AddCoral(localPlace, 26);
+			else
+			{
+				AddCoralOnMap(pos, coralTileMap.GetTile(pos), 26);
+			}
 		}
 
 		foreach (Vector3Int pos in algaeTileMap.cellBounds.allPositionsWithin)
 		{
-			Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
-			if (!groundTileMap.HasTile(localPlace)) continue;
-			if (!algaeTileMap.HasTile(localPlace)) continue;
-			if (!substrataCells.ContainsKey(localPlace) || substrataOverlayTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || !Utility.WithinBoardBounds(localPlace, boardSize))
+			if (!algaeTileMap.HasTile(pos)) continue; // does this case even happen???
+			if (!SpaceIsAvailable(pos) || coralCells.ContainsKey(pos))
 			{
-				algaeTileMap.SetTile(localPlace, null);
-				continue;
+				algaeTileMap.SetTile(pos, null);
 			}
-			AddAlgae(localPlace, 26);
+			else
+			{
+				AddAlgaeOnMap(pos, algaeTileMap.GetTile(pos), 26);
+			}
 		}
 	}
 
@@ -604,71 +647,6 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	/*
-	 * Adds an algae on the map if possible
-	 */
-	private void AddAlgaeOnMap(Vector3Int position, TileBase tileBase, int maturity)
-	{
-		int type = FindIndexOfEntityFromName(tileBase.name);
-		AlgaeCellData cell = new AlgaeCellData(position, algaeTileMap, tileBase, maturity, algaeDataContainer.algae[type]);
-		hfTotalProduction += cell.algaeData.hfProduction;
-		algaeCells.Add(position, cell);
-		algaeTileMap.SetTile(position, tileBase);
-	}
-
-	/*
-	 * Adds a coral on the map if possible
-	 */
-	private void AddCoralOnMap(Vector3Int position, TileBase tileBase, int maturity)
-	{
-		int type = FindIndexOfEntityFromName(tileBase.name);
-		CoralCellData cell = new CoralCellData(position, coralTileMap, tileBase, maturity, coralBaseData.corals[type]);
-		cfTotalProduction += cell.coralData.cfProduction;
-		hfTotalProduction += cell.coralData.hfProduction;
-		coralTypeNumbers[type]++;
-		coralCells.Add(position, cell);
-		coralTileMap.SetTile(position, tileBase);
-	}
-
-	/*
-	 * Removes algae on map if it exists
-	 */
-	private void RemoveAlgaeOnMap(Vector3Int position)
-	{
-		if (algaeCells.ContainsKey(position) && algaeTileMap.HasTile(position))
-		{
-			AlgaeCellData cell = algaeCells[position];
-			hfTotalProduction -= cell.algaeData.hfProduction;
-			algaeCells.Remove(position);
-			algaeTileMap.SetTile(position, null);
-		}
-	}
-
-	/*
-	 * Removes coral on map if it exists
-	 */
-	private void RemoveCoralOnMap(Vector3Int position)
-	{
-		if (coralCells.ContainsKey(position) && coralTileMap.HasTile(position))
-		{
-			CoralCellData cell = coralCells[position];
-			cfTotalProduction -= cell.coralData.cfProduction;
-			hfTotalProduction -= cell.coralData.hfProduction;
-			coralTypeNumbers[FindIndexOfEntityFromName(cell.TileBase.name)]++;
-			coralCells.Remove(position);
-			coralTileMap.SetTile(position, null);
-		}
-	}
-
-	private bool SpaceIsAvailable(Vector3Int position)
-	{
-		if (!groundTileMap.HasTile(position)) return false;
-		if (!(substrataTileMap.HasTile(position) && substrataCells.ContainsKey(position))) return false;
-		if (substrataOverlayTileMap.HasTile(position)) return false;
-		if (!Utility.WithinBoardBounds(position, boardSize)) return false;
-		return true;
-	}
-
 	// __ECONOMY__
 	#region Algae Updates
 	private void UpdateAllAlgae()
@@ -713,6 +691,7 @@ public class GameManager : MonoBehaviour
 		List<Vector3Int> keys = new List<Vector3Int>(algaeCells.Keys);
 		foreach (Vector3Int key in keys)
 		{
+			// __MAGIC_NUMBER
 			if (algaeCells[key].maturity > 25)
 			{ // propagate only if "mature"
 				for (int i = 0; i < totalCoralTypes; i++)
@@ -820,16 +799,19 @@ public class GameManager : MonoBehaviour
 		List<Vector3Int> keys = new List<Vector3Int>(coralCells.Keys);
 		foreach (Vector3Int key in keys)
 		{
+			// __MAGIC_NUMBER
 			if (coralCells[key].maturity <= 25)
 			{
 				// check adj corals
 				// miscFactors aka the amount of corals around it influences how much more they can add to the survivability of one
 				// how much they actually contribue can be varied; change the amount 0.01f to something that makes more sense
 				int miscFactors = 0;
-				// __FIX__ MAYBE USE SPREAD?
-				for (int i = 0; i < totalCoralTypes; i++)
-					if (coralCells.ContainsKey(key + hexNeighbors[key.y & 1, i]))
-						miscFactors += coralCells[key + hexNeighbors[key.y & 1, i]].maturity / 5;
+				HashSet<Vector3Int> neighbors = Utility.Spread(key, 1);
+				foreach (Vector3Int neighbor in neighbors)
+				{
+					if (key != neighbor && coralCells.ContainsKey(neighbor))
+						miscFactors += coralCells[neighbor].maturity / 5;
+				}
 				coralCells[key].addMaturity(1);
 				if (!economyMachine.coralWillSurvive(coralCells[key], substrataCells[key], miscFactors - coralSurvivabilityDebuff, groundTileMap.GetTile(key).name))
 				{
@@ -860,6 +842,7 @@ public class GameManager : MonoBehaviour
 		List<Vector3Int> keys = new List<Vector3Int>(coralCells.Keys);
 		foreach (Vector3Int key in keys)
 		{
+			// __MAGIC_NUMBER
 			if (coralCells[key].maturity > 25)
 			{ // propagate only if "mature"
 				for (int i = 0; i < totalCoralTypes; i++)
