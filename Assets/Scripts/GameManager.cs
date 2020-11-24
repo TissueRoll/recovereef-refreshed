@@ -231,7 +231,7 @@ public class GameManager : MonoBehaviour
 	private int GetIndexOfReadyCoral(int type)
 	{
 		int index = -1;
-		for (int i = 0; i < growingCorals[type].Count; i++)
+		for (int i = 0; i < GetCoralsPerType(type); i++)
 		{
 			if (index == -1 && growingCorals[type][i].timer.isDone())
 				index = i;
@@ -459,6 +459,7 @@ public class GameManager : MonoBehaviour
 		InvokeRepeating(nameof(KillCorals), 1.0f, 3.0f);
 	}
 
+	// __DECOMPOSE: a lot of things can be isolated into their own functions rather than their own regions
 	void Update()
 	{
 		if (GameEnd.gameHasEnded)
