@@ -706,12 +706,11 @@ public class GameManager : MonoBehaviour
 						{
 							int randNum = UnityEngine.Random.Range(0, 101);
 							HashSet<Vector3Int> surrounding = Utility.Spread(localPlace, 1);
-							CoralCellData temp;
-							foreach (Vector3Int tempLocation in surrounding)
+							foreach (Vector3Int neighbor in surrounding)
 							{
-								if (coralCells.TryGetValue(tempLocation, out temp))
+								if (coralCells.ContainsKey(neighbor))
 								{
-									randNum -= coralCells[tempLocation].maturity / 3;
+									randNum -= coralCells[neighbor].maturity / 3;
 								}
 							}
 							if (randNum < 60) continue;
@@ -786,9 +785,9 @@ public class GameManager : MonoBehaviour
 		{
 			float minTime = 3600f;
 			// go find the quickest to finish coral
-			for (int i = 0; i < growingCorals[type].Count; i++)
+			foreach (NursingCoral coral in growingCorals[type])
 			{
-				minTime = Math.Min(minTime, growingCorals[type][i].timer.currentTime);
+				minTime = Math.Min(minTime, coral.timer.currentTime);
 			}
 			string t = "Soonest to mature coral of this type has " + Utility.ConvertTimetoMS(minTime) + " time left.";
 			FeedbackDialogue(t, globalVarContainer.globals[level].feedbackDelayTime);
@@ -816,8 +815,8 @@ public class GameManager : MonoBehaviour
 				if (!economyMachine.CoralWillSurvive(coralCells[key], substrataCells[key], miscFactors - coralSurvivabilityDebuff, groundTileMap.GetTile(key).name))
 				{
 					// setting data
-					coralTileMap.SetTile(key, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[key].TileBase.name)]);
 					markedToDieCoral.Add(key);
+					coralTileMap.SetTile(key, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[key].TileBase.name)]);
 				}
 			}
 		}
@@ -830,8 +829,7 @@ public class GameManager : MonoBehaviour
 			return;
 		foreach (Vector3Int key in markedToDieCoral)
 		{
-			if (!coralCells.ContainsKey(key))
-				continue;
+			if (!coralCells.ContainsKey(key)) continue;
 			RemoveCoralOnMap(key);
 		}
 		markedToDieCoral.Clear();
@@ -860,6 +858,7 @@ public class GameManager : MonoBehaviour
 	}
 	#endregion
 	#region Disasters
+	// __MAGIC_NUMBER: so many magic numbers
 	private void RandomDisaster(int forceEvent = 0)
 	{
 		// chance: 1/50
@@ -895,6 +894,7 @@ public class GameManager : MonoBehaviour
 				if (coralCells.ContainsKey(toxicPos))
 				{
 					markedToDieCoral.Add(toxicPos); // __TIMING__
+					// this is replacing the asset with a dying coral sprite
 					coralTileMap.SetTile(toxicPos, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[toxicPos].TileBase.name)]);
 				}
 				if (algaeCells.ContainsKey(toxicPos))
