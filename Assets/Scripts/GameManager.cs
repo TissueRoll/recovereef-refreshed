@@ -632,7 +632,7 @@ public class GameManager : MonoBehaviour
 		fishDisplayText.text = "Fish Income: " + fishIncome;
 		if (hfTotalProduction >= cfTotalProduction)
 		{
-			if (economyMachine.isAverageGood())
+			if (economyMachine.IsAverageGood())
 			{
 				fishImageImage.color = Utility.gold;
 			}
@@ -673,7 +673,7 @@ public class GameManager : MonoBehaviour
 					weightedCoralMaturity += coralCells[pos].maturity;
 				}
 			}
-			if (!economyMachine.algaeWillSurvive(algaeCells[key], substrataCells[key], -3 * weightedCoralMaturity / 2 + coralSurvivabilityDebuff))
+			if (!economyMachine.AlgaeWillSurvive(algaeCells[key], substrataCells[key], -3 * weightedCoralMaturity / 2 + coralSurvivabilityDebuff))
 			{
 				RemoveAlgaeOnMap(key);
 			}
@@ -696,7 +696,7 @@ public class GameManager : MonoBehaviour
 			{ // propagate only if "mature"
 				for (int i = 0; i < totalCoralTypes; i++)
 				{
-					if (economyMachine.algaeWillPropagate(algaeCells[key], coralPropagationDebuff, groundTileMap.GetTile(key).name))
+					if (economyMachine.AlgaeWillPropagate(algaeCells[key], coralPropagationDebuff, groundTileMap.GetTile(key).name))
 					{
 						Vector3Int localPlace = key + hexNeighbors[key.y & 1, i];
 						if (!SpaceIsAvailable(localPlace)) continue;
@@ -813,7 +813,7 @@ public class GameManager : MonoBehaviour
 						miscFactors += coralCells[neighbor].maturity / 5;
 				}
 				coralCells[key].addMaturity(1);
-				if (!economyMachine.coralWillSurvive(coralCells[key], substrataCells[key], miscFactors - coralSurvivabilityDebuff, groundTileMap.GetTile(key).name))
+				if (!economyMachine.CoralWillSurvive(coralCells[key], substrataCells[key], miscFactors - coralSurvivabilityDebuff, groundTileMap.GetTile(key).name))
 				{
 					// setting data
 					coralTileMap.SetTile(key, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[key].TileBase.name)]);
@@ -847,7 +847,7 @@ public class GameManager : MonoBehaviour
 			{ // propagate only if "mature"
 				for (int i = 0; i < totalCoralTypes; i++)
 				{
-					if (economyMachine.coralWillPropagate(coralCells[key], -coralPropagationDebuff, groundTileMap.GetTile(key).name))
+					if (economyMachine.CoralWillPropagate(coralCells[key], -coralPropagationDebuff, groundTileMap.GetTile(key).name))
 					{
 						Vector3Int localPlace = key + hexNeighbors[key.y & 1, i];
 						if (!SpaceIsAvailable(localPlace)) continue;
@@ -946,8 +946,8 @@ public class GameManager : MonoBehaviour
 	#region Misc Updates
 	private void UpdateFishOutput()
 	{
-		economyMachine.updateHFCF(hfTotalProduction, cfTotalProduction);
-		fishIncome = (int)Math.Round(economyMachine.getTotalFish(coralTypeNumbers));
+		economyMachine.UpdateHFCF(hfTotalProduction, cfTotalProduction);
+		fishIncome = (int)Math.Round(economyMachine.GetTotalFish(coralTypeNumbers));
 	}
 	#endregion
 

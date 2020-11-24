@@ -12,11 +12,12 @@ public class EconomyMachine
 	private int coralNumberTolerance;
 	private int cycle;
 	private int cycleMax;
-	private List<float> vals;
+	private List<float> vals; // multiplier history
 	private bool initialCycleComplete;
 	private List<float> desired;
 	float tolerancePercentage;
 
+	// __ENHANCE: some values are hardcoded, maybe move data to external file
 	public EconomyMachine(float aHF, float aCF, float tol, int cNT)
 	{
 		actualHF = aHF;
@@ -27,59 +28,53 @@ public class EconomyMachine
 		cycleMax = 5;
 		vals = new List<float>() { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
 		initialCycleComplete = false;
-		desired = new List<float>() { 0.25f, 0.21f, 0.15f, 0.17f, 0.12f, 0.10f };
+		desired = new List<float>() { 0.60f, 0.30f, 0.10f }; 
 		tolerancePercentage = 0.05f;
 	}
 
-	public bool algaeWillSurvive(AlgaeCellData algaeCellData, int groundViability, int additiveFactors)
+	public bool AlgaeWillSurvive(AlgaeCellData algaeCellData, int groundViability, int additiveFactors)
 	{
-		bool result = true;
 		int computedSurvivability = groundViability
 									+ algaeCellData.maturity
 									+ algaeCellData.algaeData.survivability
 									+ additiveFactors;
-		result = (UnityEngine.Random.Range(0, 1001) <= computedSurvivability);
+		bool result = Random.Range(0, 1001) <= computedSurvivability;
 		return result;
 	}
 
-	public bool coralWillSurvive(CoralCellData coralCellData, int groundViability, int additiveFactors, string groundName)
+	public bool CoralWillSurvive(CoralCellData coralCellData, int groundViability, int additiveFactors, string groundName)
 	{
-		bool result = true;
 		int computedSurvivability = groundViability
 									+ coralCellData.maturity
 									+ coralCellData.coralData.survivability
 									+ additiveFactors
 									+ (Regex.IsMatch(groundName, "." + coralCellData.coralData.prefTerrain + ".") ? 5 : -10);
-		result = (UnityEngine.Random.Range(0, 1001) <= computedSurvivability);
+		bool result = Random.Range(0, 1001) <= computedSurvivability;
 		return result;
 	}
 
-	public bool coralWillPropagate(CoralCellData coralCellData, int additiveFactors, string groundName)
+	public bool CoralWillPropagate(CoralCellData coralCellData, int additiveFactors, string groundName)
 	{
-		bool result = true;
 		int computedPropagatability = UnityEngine.Random.Range(30, 41) // base
 									+ coralCellData.coralData.propagatability
 									+ additiveFactors
 									+ (Regex.IsMatch(groundName, "." + coralCellData.coralData.prefTerrain + ".") ? 5 : -10);
-		result = (UnityEngine.Random.Range(0, 101) <= computedPropagatability);
+		bool result = Random.Range(0, 101) <= computedPropagatability;
 		return result;
 	}
 
-	public bool algaeWillPropagate(AlgaeCellData algaeCellData, int additiveFactors, string groundName)
+	public bool AlgaeWillPropagate(AlgaeCellData algaeCellData, int additiveFactors, string groundName)
 	{
-		bool result = true;
 		int computedPropagatability = UnityEngine.Random.Range(20, 31) // base
 									+ algaeCellData.algaeData.propagatability
 									+ additiveFactors;
-		result = (UnityEngine.Random.Range(0, 101) <= computedPropagatability);
+		bool result = Random.Range(0, 101) <= computedPropagatability;
 		return result;
 	}
 
-	public float diversityMultiplier(List<int> coralNumbers)
+	public float DiversityMultiplier(List<int> coralNumbers)
 	{
 		float multiplier = 1.0f;
-		int[] fast = new int[3] { 0, 1, 3 };
-		int[] slow = new int[3] { 2, 4, 5 };
 		float sum = 0;
 		foreach (int x in coralNumbers)
 		{
@@ -117,7 +112,7 @@ public class EconomyMachine
 		return averageMultiplier;
 	}
 
-	public void updateHFCF(float hf, float cf)
+	public void UpdateHFCF(float hf, float cf)
 	{
 		float diff = (Mathf.Max(cf, hf) - Mathf.Min(cf, hf));
 		if (Mathf.Abs(diff) <= tolerance)
@@ -139,22 +134,22 @@ public class EconomyMachine
 		actualCF = Mathf.Max(0f, actualCF);
 	}
 
-	public float getActualHF()
+	public float GetActualHF()
 	{
 		return actualHF;
 	}
 
-	public float getActualCF()
+	public float GetActualCF()
 	{
 		return actualCF;
 	}
 
-	public float getTotalFish(List<int> coralNumbers)
+	public float GetTotalFish(List<int> coralNumbers)
 	{
-		return (0.2f * actualHF + 0.3f * actualCF) * diversityMultiplier(coralNumbers);
+		return (0.2f * actualHF + 0.3f * actualCF) * DiversityMultiplier(coralNumbers);
 	}
 
-	public bool isAverageGood()
+	public bool IsAverageGood()
 	{
 		float averageMultiplier = 0.0f;
 		foreach (float x in vals)
