@@ -225,6 +225,15 @@ public class GameManager : MonoBehaviour
 		}
 		return ready;
 	}
+	public float GetSoonestToMatureCoralPercent(int type)
+	{
+		float best = 0.0f;
+		foreach (NursingCoral coral in growingCorals[type])
+		{
+			best = Math.Max(best, coral.timer.percentComplete);
+		}
+		return best;
+	}
 	/*
 	 * Programmer note: by nature of the new system, the ready coral is ALWAYS in front of the list
 	 */
