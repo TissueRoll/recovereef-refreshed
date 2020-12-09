@@ -82,6 +82,9 @@ public class GameManager : MonoBehaviour
 	private float cfTotalProduction = 0;
 	private float hfTotalProduction = 0;
 	private CountdownTimer tempTimer;
+	// dirty flags
+	private List<int> dirtyReadyCoralsPerType;
+	private List<int> dirtyTotalCoralsPerType;
 	private List<NursingCoral>[] growingCorals;
 	private CountdownTimer disasterTimer;
 	private CountdownTimer climateChangeTimer;
@@ -98,6 +101,17 @@ public class GameManager : MonoBehaviour
 	private Vector2 resolution;
 	private int totalCoralTypes = 3;
 	private bool shovelChosen = false;
+	#endregion
+
+	#region Event Stuff
+	public class QueueStatusChangedEventArgs : EventArgs
+	{
+		public int coralType;
+		public int coralReady;
+		public int coralTotal;
+	}
+	public event EventHandler<QueueStatusChangedEventArgs> queueStatusChanged;
+	
 	#endregion
 
 	#region Generic Helper Functions
@@ -365,9 +379,13 @@ public class GameManager : MonoBehaviour
 		substrataCells = new Dictionary<Vector3Int, int>();
 		algaeCells = new Dictionary<Vector3Int, AlgaeCellData>();
 		growingCorals = new List<NursingCoral>[totalCoralTypes];
+		dirtyReadyCoralsPerType = new List<int>();
+		dirtyTotalCoralsPerType = new List<int>();
 		for (int i = 0; i < totalCoralTypes; i++)
 		{
 			growingCorals[i] = new List<NursingCoral>();
+			dirtyReadyCoralsPerType.Add(0);
+			dirtyTotalCoralsPerType.Add(0);
 		}
 		markedToDieCoral = new List<Vector3Int>();
 
@@ -587,6 +605,19 @@ public class GameManager : MonoBehaviour
 			{
 				coralTmp.timer.updateTime();
 			}
+			int currentReadyCoralsOfType = GetReadyCoralsPerType(type);
+			int currentTotalCoralsOfType = GetCoralsPerType(type);
+			if (dirtyReadyCoralsPerType[type] != currentReadyCoralsOfType || dirtyTotalCoralsPerType[type] != currentTotalCoralsOfType)
+			{
+				dirtyReadyCoralsPerType[type] = currentReadyCoralsOfType;
+				dirtyTotalCoralsPerType[type] = currentTotalCoralsOfType;
+				queueStatusChanged?.Invoke(this, new QueueStatusChangedEventArgs
+				{
+					coralType = type,
+					coralReady = currentReadyCoralsOfType,
+					coralTotal = currentTotalCoralsOfType
+				});
+			}
 		}
 
 		// cncText.text = GetCoralsInNursery() + "/" + globalVarContainer.globals[level].maxSpaceInNursery + " SLOTS LEFT";
@@ -783,13 +814,12 @@ public class GameManager : MonoBehaviour
 		else if ((substrataTileMap.HasTile(position) || substrataCells.ContainsKey(position)) && readyNum > 0)
 		{
 			int tempIdx = GetIndexOfReadyCoral(type);
-			NursingCoral tempCoral = null;
 			if (tempIdx != -1)
 			{
-				tempCoral = growingCorals[type][tempIdx];
 				growingCorals[type].RemoveAt(tempIdx);
 			}
 			AddCoralOnMap(position, Assets.instance.coralTileBases[type], 0);
+			
 		}
 		else if (readyNum == 0 && loadedNum - readyNum > 0)
 		{
