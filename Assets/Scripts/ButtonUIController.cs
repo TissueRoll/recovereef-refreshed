@@ -19,7 +19,7 @@ public class ButtonUIController : MonoBehaviour
         bar.minimum = 0.0f;
         bar.maximum = 1.0f;
         bar.current = GameManager.instance.GetSoonestToMatureCoralPercent(type); // maybe crappy dependency but whatever
-        GameManager.instance.queueStatusChanged += ChangeAmount;
+        GameManager.instance.QueueStatusChanged += ChangeAmount;
     }
 
     private void ChangeAmount(object sender, GameManager.QueueStatusChangedEventArgs e)
@@ -33,7 +33,7 @@ public class ButtonUIController : MonoBehaviour
 
 	private void OnDestroy()
 	{
-        GameManager.instance.queueStatusChanged -= ChangeAmount;
+        GameManager.instance.QueueStatusChanged -= ChangeAmount;
     }
 
 	// Update is called once per frame

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8453505900617352430
+--- !u!1 &2643578180135445299
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6321041013115795304}
-  - component: {fileID: 1462763156635242233}
+  - component: {fileID: 2643578180135445301}
+  - component: {fileID: 2643578180135445298}
   m_Layer: 0
   m_Name: GameAssets
   m_TagString: Untagged
@@ -17,37 +17,53 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6321041013115795304
+--- !u!4 &2643578180135445301
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8453505900617352430}
+  m_GameObject: {fileID: 2643578180135445299}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7744408, y: 5.5434175, z: -24.582031}
+  m_LocalPosition: {x: -1.1517264, y: -3.8707936, z: -9.190186}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1462763156635242233
+--- !u!114 &2643578180135445298
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8453505900617352430}
+  m_GameObject: {fileID: 2643578180135445299}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1722fd72201ae94e8fdb65d43cc10cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coralTileBases:
+  coralTileBases00:
+  - {fileID: 11400000, guid: 0e39fd16a99361c4592d0d6c3fadc793, type: 2}
+  - {fileID: 11400000, guid: c08e59d4834822c4fa656448e0f76505, type: 2}
+  - {fileID: 11400000, guid: efe5e0211dce9e54ba379c52b817c24d, type: 2}
+  coralTileBases01:
+  - {fileID: 11400000, guid: d1c95361253b7b340a0fe991a2aec5af, type: 2}
+  - {fileID: 11400000, guid: 2e4b229c1d80fbd4d9c96c6d33367bb8, type: 2}
+  - {fileID: 11400000, guid: 80671c41ec5434945a4f3c64a5605cef, type: 2}
+  coralTileBases02:
   - {fileID: 11400000, guid: fa792e6dc5808694c85a8657778418dc, type: 2}
   - {fileID: 11400000, guid: c37f70dddbfba5843866cce183486ed8, type: 2}
   - {fileID: 11400000, guid: 821d234db3fa4174eae95796f342912c, type: 2}
-  coralDeadTileBases:
+  coralDeadTileBases00:
+  - {fileID: 11400000, guid: ad1c9045b778e0a4eb32349322f4d5e8, type: 2}
+  - {fileID: 11400000, guid: 02db60b41320ca043899faf9ae92f956, type: 2}
+  - {fileID: 11400000, guid: d62fc18eee693634f85f2c168277605d, type: 2}
+  coralDeadTileBases01:
+  - {fileID: 11400000, guid: bcb382abfe1ca89458406889aaadc301, type: 2}
+  - {fileID: 11400000, guid: 78ebd4b15595a704e9d2ce09ec013c3e, type: 2}
+  - {fileID: 11400000, guid: 006ec7d25bb666c498c297e6fdcc84b9, type: 2}
+  coralDeadTileBases02:
   - {fileID: 11400000, guid: e04f48e6cdc1d09429563b0c36f878d7, type: 2}
   - {fileID: 11400000, guid: c0cf0f9efdaaf2540b0972abd3542832, type: 2}
   - {fileID: 11400000, guid: 3cd9981cc9621c04ca79e7045ccc17ad, type: 2}
@@ -55,21 +71,34 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7d74c5fc43697214db698aa8fc1087c8, type: 2}
   - {fileID: 11400000, guid: 1918d687c7df3c3498d1445cf0c71f45, type: 2}
   - {fileID: 11400000, guid: ac9ca3f18b6bff44485e2b1fced5f84d, type: 2}
-  algaeTileBases:
+  algaeTileBases00:
+  - {fileID: 11400000, guid: 85585b73413f0e945892d3cc02e13ea0, type: 2}
+  - {fileID: 11400000, guid: 9b2a952abc2c9d14e8eb35b562be6d14, type: 2}
+  algaeTileBases01:
+  - {fileID: 11400000, guid: df2ce65ca145ee44ebe583aad23da981, type: 2}
+  - {fileID: 11400000, guid: 516b39e1623959941844d8a751671fb6, type: 2}
+  algaeTileBases02:
   - {fileID: 11400000, guid: 761f3867fbe34e44d96d85219c5bc082, type: 2}
   - {fileID: 11400000, guid: e833474174ce2654aacd008798ee7e93, type: 2}
   substrataTileBases:
   - {fileID: 11400000, guid: c72eea2b7eec6d14990f97427e15de30, type: 2}
   - {fileID: 11400000, guid: 271a09b3983f89646a34278635442028, type: 2}
   - {fileID: 11400000, guid: 3f7ef164fdfbba74186ae48483a2f1c6, type: 2}
-  - {fileID: 11400000, guid: 94fd75259a2e97b4392f9e5fdba510bb, type: 2}
-  - {fileID: 11400000, guid: d572d944b6deabe4bae4571f8c6968b8, type: 2}
-  - {fileID: 11400000, guid: 3d95ac1b12780054cad58aef83d6f7e4, type: 2}
+  - {fileID: 11400000, guid: 30994214ec20eaf4d8ca06187f30895f, type: 2}
+  - {fileID: 11400000, guid: 9e24d958db5e5254d8998ec5df20b01c, type: 2}
   toxicTileBases:
-  - {fileID: 11400000, guid: b9a8c3716a840364cb328dd680e24706, type: 2}
-  - {fileID: 11400000, guid: 0ff12cb47d3722b458ed6a25c8c71976, type: 2}
-  - {fileID: 11400000, guid: 64961ec9895de6749965465d9dff6b51, type: 2}
+  - {fileID: 11400000, guid: ede11e5c5b47ba24b85e6158af902ef4, type: 2}
+  - {fileID: 11400000, guid: a0822100bca4efc45b2986eef0f0742a, type: 2}
+  - {fileID: 11400000, guid: ea7ce63de518785499a2efb977f73b6a, type: 2}
   algaeEdgeTileBase: {fileID: 11400000, guid: d469a8aebea22b44b8fa2922b2488c83, type: 2}
+  edgeSubstrataTileBases:
+  - {fileID: 11400000, guid: 33b3cf3e62e91224eb0b5ad1f50563c6, type: 2}
+  - {fileID: 11400000, guid: c8c66fa035318d040a7d45e5acfca0ed, type: 2}
+  - {fileID: 11400000, guid: 11b8c3d934928154fb0b183c315d7971, type: 2}
+  edgeGroundTileBases:
+  - {fileID: 11400000, guid: bb6dbdf287e7c2c48b26d230179b0aeb, type: 2}
+  - {fileID: 11400000, guid: e68f4b598e938e042b53f7290f1871e9, type: 2}
+  - {fileID: 11400000, guid: 495206c036cd1fa44b820096567b9588, type: 2}
   toxicOverlay: {fileID: 11400000, guid: df6e529984aa9a945a8d3cc8d6dd2997, type: 2}
   gameWinWordArt: {fileID: 21300000, guid: 69fdf195e8e82954ba56a41569ce27f7, type: 3}
   gameLoseWordArt: {fileID: 21300000, guid: 612e1d22906d2314686e1a2d07f26073, type: 3}

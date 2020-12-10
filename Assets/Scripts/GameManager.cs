@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
 		public int coralReady;
 		public int coralTotal;
 	}
-	public event EventHandler<QueueStatusChangedEventArgs> queueStatusChanged;
+	public event EventHandler<QueueStatusChangedEventArgs> QueueStatusChanged;
 	
 	#endregion
 
@@ -124,87 +124,93 @@ public class GameManager : MonoBehaviour
 	}
 	#endregion
 	#region Game-Specific Helper Functions
-	// __STYLE: maybe use some kind of .Find(delegate/funcptr) thing to make this cleaner
-	private int FindIndexOfEntityFromType(string code, string type)
+	private string GetTypeOfTileBase(TileBase tileBase)
 	{
-		int index = -1;
-		if (type == "coral")
+		string[] tokens = tileBase.name.Split('_');
+		if (tokens.Length == 0)
 		{
-			for (int i = 0; i < coralBaseData.corals.Count; i++)
-			{
-				if (Regex.IsMatch(coralBaseData.corals[i].name, code))
-				{
-					index = i;
-					break;
-				}
-			}
+			return "ERROR"; // maybe throw next time?
 		}
-		else if (type == "algae")
-		{
-			for (int i = 0; i < algaeDataContainer.algae.Count; i++)
-			{
-				if (Regex.IsMatch(algaeDataContainer.algae[i].name, code))
-				{
-					index = i;
-					break;
-				}
-			}
-		}
-		else if (type == "substrata")
-		{
-			for (int i = 0; i < substrataDataContainer.substrata.Count; i++)
-			{
-				if (Regex.IsMatch(substrataDataContainer.substrata[i].name, code))
-				{
-					index = i;
-					break;
-				}
-			}
-		}
-		if (index == -1)
-			print("ERROR: Entity not found");
-		return index;
+		return tokens[0];
 	}
-	// __STYLE: maybe use some kind of .Find(delegate/funcptr) thing to make this cleaner
-	private int FindIndexOfEntityFromName(string nameOfTileBase)
+
+	private int GetIndexOfTileBaseHelper(TileBase[] array, TileBase tileBase)
 	{
-		int index = -1;
-		if (Regex.IsMatch(nameOfTileBase, ".*coral.*"))
+		int idx = -1;
+		for (int i = 0; i < array.Length; ++i)
 		{
-			for (int i = 0; i < coralBaseData.corals.Count; i++)
+			if (array[i].name == tileBase.name)
 			{
-				if (Regex.IsMatch(nameOfTileBase, ".*coral_" + coralBaseData.corals[i].name + ".*"))
-				{
-					index = i;
-					break;
-				}
+				idx = i;
+				break;
 			}
 		}
-		else if (Regex.IsMatch(nameOfTileBase, ".*algae.*"))
+		return idx;
+	}
+
+	// __FIX: please for the love of god fix this steaming pile of shit
+	private int GetIndexOfTileBase(TileBase tileBase)
+	{
+		int ans = -1;
+		// corals
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralTileBases00, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralTileBases01, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralTileBases02, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralDeadTileBases00, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralDeadTileBases01, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralDeadTileBases02, tileBase));
+		// algae
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.algaeTileBases00, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.algaeTileBases01, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.algaeTileBases02, tileBase));
+		// substrata
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.substrataTileBases, tileBase));
+		// toxic
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.toxicTileBases, tileBase));
+		// edge
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.edgeGroundTileBases, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.edgeSubstrataTileBases, tileBase));
+		return ans;
+	}
+	// assumes it's an entity
+	private string GetGrowthLevelOfEntity(TileBase tileBase)
+	{
+		if (tileBase.name.Contains("young"))
 		{
-			for (int i = 0; i < algaeDataContainer.algae.Count; i++)
-			{
-				if (Regex.IsMatch(nameOfTileBase, ".*algae_" + algaeDataContainer.algae[i].name + ".*"))
-				{
-					index = i;
-					break;
-				}
-			}
-		}
-		else if (Regex.IsMatch(nameOfTileBase, ".*substrata.*"))
+			return "young";
+		} 
+		else if (tileBase.name.Contains("mid"))
 		{
-			for (int i = 0; i < substrataDataContainer.substrata.Count; i++)
-			{
-				if (Regex.IsMatch(nameOfTileBase, ".*substrata_" + substrataDataContainer.substrata[i].name + ".*"))
-				{
-					index = i;
-					break;
-				}
-			}
+			return "mid";
 		}
-		if (index == -1)
-			print("ERROR: Entity not found");
-		return index;
+		else if (tileBase.name.Contains("mature"))
+		{
+			return "mature";
+		}
+		else
+		{
+			return "ERROR"; // throw exception?
+		}
+	}
+	// assumes it's a coral
+	private TileBase ConvertAliveCoralToDead(TileBase tileBase)
+	{
+		if (GetGrowthLevelOfEntity(tileBase) == "young")
+		{
+			return Assets.instance.coralDeadTileBases00[GetIndexOfTileBase(tileBase)];
+		}
+		else if (GetGrowthLevelOfEntity(tileBase) == "mid")
+		{
+			return Assets.instance.coralDeadTileBases01[GetIndexOfTileBase(tileBase)];
+		}
+		else if (GetGrowthLevelOfEntity(tileBase) == "mature")
+		{
+			return Assets.instance.coralDeadTileBases02[GetIndexOfTileBase(tileBase)];
+		}
+		else
+		{
+			return null; // if for some reason something went wrong
+		}
 	}
 	public void ChangeCoral(int select)
 	{
@@ -266,7 +272,7 @@ public class GameManager : MonoBehaviour
 	 */
 	private void AddAlgaeOnMap(Vector3Int position, TileBase tileBase, int maturity)
 	{
-		int type = FindIndexOfEntityFromName(tileBase.name);
+		int type = GetIndexOfTileBase(tileBase);
 		AlgaeCellData cell = new AlgaeCellData(position, algaeTileMap, tileBase, maturity, algaeDataContainer.algae[type]);
 		hfTotalProduction += cell.algaeData.hfProduction;
 		algaeCells.Add(position, cell);
@@ -278,7 +284,7 @@ public class GameManager : MonoBehaviour
 	 */
 	private void AddCoralOnMap(Vector3Int position, TileBase tileBase, int maturity)
 	{
-		int type = FindIndexOfEntityFromName(tileBase.name);
+		int type = GetIndexOfTileBase(tileBase);
 		CoralCellData cell = new CoralCellData(position, coralTileMap, tileBase, maturity, coralBaseData.corals[type]);
 		cfTotalProduction += cell.coralData.cfProduction;
 		hfTotalProduction += cell.coralData.hfProduction;
@@ -311,7 +317,7 @@ public class GameManager : MonoBehaviour
 			CoralCellData cell = coralCells[position];
 			cfTotalProduction -= cell.coralData.cfProduction;
 			hfTotalProduction -= cell.coralData.hfProduction;
-			coralTypeNumbers[FindIndexOfEntityFromName(cell.TileBase.name)]++;
+			coralTypeNumbers[GetIndexOfTileBase(cell.TileBase)]++;
 			coralCells.Remove(position);
 			coralTileMap.SetTile(position, null);
 		}
@@ -400,11 +406,9 @@ public class GameManager : MonoBehaviour
 			}
 			else
 			{
-				// __FIX: hacky way of doing it
 				TileBase currentTB = substrataTileMap.GetTile(pos);
-				int idx = FindIndexOfEntityFromName(currentTB.name);
-				if (idx == -1)
-				{ // UNKNOWN TILE; FOR NOW TOXIC
+				if (GetTypeOfTileBase(currentTB) == "toxic")
+				{
 					HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
 					foreach (Vector3Int toxicPos in toxicSpread)
 					{
@@ -413,7 +417,7 @@ public class GameManager : MonoBehaviour
 				}
 				else
 				{
-					substrataCells.Add(pos, substrataDataContainer.substrata[idx].groundViability);
+					substrataCells.Add(pos, substrataDataContainer.substrata[GetIndexOfTileBase(currentTB)].groundViability);
 				}
 			}
 		}
@@ -611,7 +615,7 @@ public class GameManager : MonoBehaviour
 			{
 				dirtyReadyCoralsPerType[type] = currentReadyCoralsOfType;
 				dirtyTotalCoralsPerType[type] = currentTotalCoralsOfType;
-				queueStatusChanged?.Invoke(this, new QueueStatusChangedEventArgs
+				QueueStatusChanged?.Invoke(this, new QueueStatusChangedEventArgs
 				{
 					coralType = type,
 					coralReady = currentReadyCoralsOfType,
@@ -696,6 +700,7 @@ public class GameManager : MonoBehaviour
 		UpdateAlgaePropagation();
 	}
 
+	// _FIX: decouple visual from this shit!!!
 	private void UpdateAlgaeSurvivability()
 	{
 		List<Vector3Int> keys = new List<Vector3Int>(algaeCells.Keys);
@@ -704,6 +709,22 @@ public class GameManager : MonoBehaviour
 			if (algaeCells[key].maturity <= 25)
 			{
 				algaeCells[key].addMaturity(1);
+				int idx = GetIndexOfTileBase(algaeCells[key].TileBase);
+				if (algaeCells[key].maturity >= 25 && algaeCells[key].TileBase.name != Assets.instance.algaeTileBases02[idx].name)
+				{
+					algaeTileMap.SetTile(key, Assets.instance.algaeTileBases02[idx]);
+					algaeCells[key].TileBase = Assets.instance.algaeTileBases02[idx];
+				}
+				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != Assets.instance.algaeTileBases01[idx].name)
+				{
+					algaeTileMap.SetTile(key, Assets.instance.algaeTileBases01[idx]);
+					algaeCells[key].TileBase = Assets.instance.algaeTileBases01[idx];
+				}
+				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != Assets.instance.algaeTileBases00[idx].name)
+				{
+					algaeTileMap.SetTile(key, Assets.instance.algaeTileBases00[idx]);
+					algaeCells[key].TileBase = Assets.instance.algaeTileBases00[idx];
+				}
 			}
 			HashSet<Vector3Int> coralsAround = Utility.Spread(key, 1);
 			int weightedCoralMaturity = 0;
@@ -756,7 +777,8 @@ public class GameManager : MonoBehaviour
 							}
 							if (randNum < 60) continue;
 						}
-						AddAlgaeOnMap(localPlace, algaeCells[key].TileBase, 0);
+						// AddAlgaeOnMap(localPlace, algaeCells[key].TileBase, 0);
+						AddAlgaeOnMap(localPlace, Assets.instance.algaeTileBases00[GetIndexOfTileBase(algaeCells[key].TileBase)], 0);
 						// delete coral under algae
 						RemoveCoralOnMap(localPlace);
 					}
@@ -818,8 +840,7 @@ public class GameManager : MonoBehaviour
 			{
 				growingCorals[type].RemoveAt(tempIdx);
 			}
-			AddCoralOnMap(position, Assets.instance.coralTileBases[type], 0);
-			
+			AddCoralOnMap(position, Assets.instance.coralTileBases00[type], 0);
 		}
 		else if (readyNum == 0 && loadedNum - readyNum > 0)
 		{
@@ -852,11 +873,27 @@ public class GameManager : MonoBehaviour
 						miscFactors += coralCells[neighbor].maturity / 5;
 				}
 				coralCells[key].addMaturity(1);
+				int idx = GetIndexOfTileBase(coralCells[key].TileBase);
+				if (coralCells[key].maturity >= 25 && coralCells[key].TileBase.name != Assets.instance.coralTileBases02[idx].name)
+				{
+					coralTileMap.SetTile(key, Assets.instance.coralTileBases02[idx]);
+					coralCells[key].TileBase = Assets.instance.coralTileBases02[idx];
+				}
+				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != Assets.instance.coralTileBases01[idx].name)
+				{
+					coralTileMap.SetTile(key, Assets.instance.coralTileBases01[idx]);
+					coralCells[key].TileBase = Assets.instance.coralTileBases01[idx];
+				}
+				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != Assets.instance.coralTileBases00[idx].name)
+				{
+					coralTileMap.SetTile(key, Assets.instance.coralTileBases00[idx]);
+					coralCells[key].TileBase = Assets.instance.coralTileBases00[idx];
+				}
 				if (!economyMachine.CoralWillSurvive(coralCells[key], substrataCells[key], miscFactors - coralSurvivabilityDebuff, groundTileMap.GetTile(key).name))
 				{
 					// setting data
 					markedToDieCoral.Add(key);
-					coralTileMap.SetTile(key, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[key].TileBase.name)]);
+					coralTileMap.SetTile(key, ConvertAliveCoralToDead(coralCells[key].TileBase));
 				}
 			}
 		}
@@ -890,7 +927,8 @@ public class GameManager : MonoBehaviour
 						Vector3Int localPlace = key + hexNeighbors[key.y & 1, i];
 						if (!SpaceIsAvailable(localPlace)) continue;
 						if (coralTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || algaeTileMap.HasTile(localPlace)) continue;
-						AddCoralOnMap(localPlace, coralCells[key].TileBase, 0);
+						// AddCoralOnMap(localPlace, coralCells[key].TileBase, 0);
+						AddCoralOnMap(localPlace, Assets.instance.coralTileBases00[GetIndexOfTileBase(coralCells[key].TileBase)], 0);
 					}
 				}
 			}
@@ -916,7 +954,7 @@ public class GameManager : MonoBehaviour
 					if (coralCells.ContainsKey(removePos))
 					{
 						markedToDieCoral.Add(removePos); // __TIMING__
-						coralTileMap.SetTile(removePos, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[removePos].TileBase.name)]);
+						coralTileMap.SetTile(removePos, ConvertAliveCoralToDead(coralCells[removePos].TileBase));
 					}
 				}
 				popupScript.makeEvent(UnityEngine.Random.Range(2, 4));
@@ -935,7 +973,7 @@ public class GameManager : MonoBehaviour
 				{
 					markedToDieCoral.Add(toxicPos); // __TIMING__
 					// this is replacing the asset with a dying coral sprite
-					coralTileMap.SetTile(toxicPos, Assets.instance.coralDeadTileBases[FindIndexOfEntityFromName(coralCells[toxicPos].TileBase.name)]);
+					coralTileMap.SetTile(toxicPos, ConvertAliveCoralToDead(coralCells[toxicPos].TileBase));
 				}
 				if (algaeCells.ContainsKey(toxicPos))
 				{

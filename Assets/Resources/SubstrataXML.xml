@@ -10,5 +10,11 @@
         <Substrata name="big">
             <GroundViability>960</GroundViability>
         </Substrata>
+		<Substrata name="tmed0">
+			<GroundViability>950</GroundViability>
+		</Substrata>
+		<Substrata name="tmed1">
+			<GroundViability>950</GroundViability>
+		</Substrata>
     </Substratas>
 </SubstrataCollection>
