@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -576,8 +577,7 @@ public class GameManager : MonoBehaviour
 		}
 		#endregion
 
-		bool rb = Input.GetMouseButtonDown(1);
-		if (rb)
+		if (Input.GetMouseButtonDown(0) && !IsMouseOverUI())
 		{
 			if (shovelChosen)
 			{
@@ -648,7 +648,11 @@ public class GameManager : MonoBehaviour
 			EndTheGame("You have recovered the reef!");
 		}
 	}
-
+	// can extend this if you want certain UI to be ignored
+	private bool IsMouseOverUI()
+	{
+		return EventSystem.current.IsPointerOverGameObject();
+	}
 	private void EndTheGame(string s)
 	{
 		endGameScript.finalStatistics(fishIncome, Utility.ConvertTimetoMS(tempTimer.currentTime));
@@ -796,7 +800,7 @@ public class GameManager : MonoBehaviour
 		UpdateCoralPropagation();
 	}
 
-	private void GrowCoral(int type)
+	public void GrowCoral(int type)
 	{
 		bool spaceInNursery = GetCoralsInNursery() < globalVarContainer.globals[level].maxSpaceInNursery;
 		if (spaceInNursery)

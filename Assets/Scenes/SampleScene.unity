@@ -17076,6 +17076,7 @@ GameObject:
   - component: {fileID: 334077924}
   - component: {fileID: 334077923}
   - component: {fileID: 334077926}
+  - component: {fileID: 334077927}
   m_Layer: 0
   m_Name: 00-Branching
   m_TagString: Untagged
@@ -17211,6 +17212,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   obj: {fileID: 1783273466}
+--- !u!114 &334077927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334077921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5948cdd69f60ff34ab36ab87195726df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftClick:
+    m_PersistentCalls:
+      m_Calls: []
+  middleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  rightClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1403995105}
+        m_MethodName: GrowCoral
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &356612123
 GameObject:
   m_ObjectHideFlags: 0
@@ -17788,6 +17821,7 @@ GameObject:
   - component: {fileID: 675993091}
   - component: {fileID: 675993090}
   - component: {fileID: 675993093}
+  - component: {fileID: 675993094}
   m_Layer: 0
   m_Name: 01-Encrusting
   m_TagString: Untagged
@@ -17923,6 +17957,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   obj: {fileID: 1240016843}
+--- !u!114 &675993094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675993088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5948cdd69f60ff34ab36ab87195726df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftClick:
+    m_PersistentCalls:
+      m_Calls: []
+  middleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  rightClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1403995105}
+        m_MethodName: GrowCoral
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &733064445
 GameObject:
   m_ObjectHideFlags: 0
@@ -18985,6 +19051,7 @@ GameObject:
   - component: {fileID: 1287644619}
   - component: {fileID: 1287644618}
   - component: {fileID: 1287644621}
+  - component: {fileID: 1287644622}
   m_Layer: 0
   m_Name: 02-Massive
   m_TagString: Untagged
@@ -19120,6 +19187,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   obj: {fileID: 319574354}
+--- !u!114 &1287644622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287644616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5948cdd69f60ff34ab36ab87195726df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftClick:
+    m_PersistentCalls:
+      m_Calls: []
+  middleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  rightClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1403995105}
+        m_MethodName: GrowCoral
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1326097712
 GameObject:
   m_ObjectHideFlags: 0
@@ -19528,6 +19627,7 @@ GameObject:
   - component: {fileID: 1407958500}
   - component: {fileID: 1407958499}
   - component: {fileID: 1407958498}
+  - component: {fileID: 1407958501}
   m_Layer: 0
   m_Name: 03-Shovel
   m_TagString: Untagged
@@ -19647,6 +19747,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407958496}
   m_CullTransparentMesh: 0
+--- !u!114 &1407958501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407958496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5948cdd69f60ff34ab36ab87195726df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftClick:
+    m_PersistentCalls:
+      m_Calls: []
+  middleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  rightClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1522912557
 GameObject:
   m_ObjectHideFlags: 0
