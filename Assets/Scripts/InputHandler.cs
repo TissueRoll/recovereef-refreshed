@@ -6,6 +6,7 @@ namespace Assets.Scripts
 	public class InputHandler : MonoBehaviour
 	{
 		[SerializeField] private MovementHandler _movementHandler;
+		[SerializeField] private FieldControlHandler _fieldControlHandler;
 		private void Awake()
 		{
 			
@@ -25,6 +26,7 @@ namespace Assets.Scripts
 		public void HandleInput()
 		{
 			_movementHandler.MovementControl();
+			_fieldControlHandler.FieldControl();
 		}
 	}
 }

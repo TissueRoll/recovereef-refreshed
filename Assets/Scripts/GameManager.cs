@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
@@ -23,12 +22,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject fishDisplay;
 	[SerializeField] private GameObject fishImage;
 	[SerializeField] private GameObject timeLeft;
-	// [SerializeField] private GameObject feedbackText;
-	// [SerializeField] private GameObject CNC;
 	[SerializeField] private GameObject popupCanvas;
 	[SerializeField] private GameObject endGameScreen;
-	// [SerializeField] private GameObject ccTimerImage;
-	// [SerializeField] private GameObject ccOverlay;
 	[SerializeField] private int level;
 	[SerializeField] private int boardSize;
 	[SerializeField] private InputHandler _inputHandler;
@@ -40,24 +35,16 @@ public class GameManager : MonoBehaviour
 	TMPro.TextMeshProUGUI fishDisplayText;
 	UnityEngine.UI.Image fishImageImage;
 	TMPro.TextMeshProUGUI timeLeftText;
-	// TMPro.TextMeshProUGUI ccTimerText;
-	// ClimateChangeTimer ccTimer;
-	// TMPro.TextMeshProUGUI cncText;
 	GameEnd endGameScript;
 	PopupScript popupScript;
-	// TMPro.TextMeshProUGUI feedbackTextText;
 	private void InitializeComponents()
 	{
 		grid = GameObject.Find("Grid").GetComponent<Grid>();
 		fishDisplayText = fishDisplay.GetComponent<TMPro.TextMeshProUGUI>();
 		fishImageImage = fishImage.GetComponent<UnityEngine.UI.Image>();
 		timeLeftText = timeLeft.GetComponent<TMPro.TextMeshProUGUI>();
-		// ccTimerText = ccTimerImage.transform.Find("CCTimeLeft").gameObject.GetComponent<TMPro.TextMeshProUGUI>();
-		// ccTimer = ccTimerImage.GetComponent<ClimateChangeTimer>();
-		// cncText = CNC.GetComponent<TMPro.TextMeshProUGUI>();
 		endGameScript = endGameScreen.GetComponent<GameEnd>();
 		popupScript = popupCanvas.GetComponent<PopupScript>();
-		// feedbackTextText = feedbackText.GetComponent<TMPro.TextMeshProUGUI>();
 	}
 	#endregion
 	#region Data Structures for the Game
@@ -76,11 +63,10 @@ public class GameManager : MonoBehaviour
 	public AlgaeDataContainer algaeDataContainer;
 	#endregion
 	#region Global Changing Values
-	private int selectedCoral = 0;
 	private int fishIncome = 0;
 	private float cfTotalProduction = 0;
 	private float hfTotalProduction = 0;
-	private CountdownTimer tempTimer;
+	private CountdownTimer gameTimer;
 	// dirty flags
 	private List<int> dirtyReadyCoralsPerType;
 	private List<int> dirtyTotalCoralsPerType;
@@ -99,7 +85,7 @@ public class GameManager : MonoBehaviour
 	private List<int> coralTypeNumbers;
 	private Vector2 resolution;
 	private int totalCoralTypes = 3;
-	private bool shovelChosen = false;
+	
 	#endregion
 
 	#region Event Stuff
@@ -121,6 +107,10 @@ public class GameManager : MonoBehaviour
 		Vector3Int position = grid.WorldToCell(worldPoint);
 		return position;
 	}
+	#endregion
+	#region Supposed to be States
+	public int selectedCoral = 0;
+	public bool shovelChosen = false;
 	#endregion
 	#region Game-Specific Helper Functions
 	private string GetTypeOfTileBase(TileBase tileBase)
@@ -360,7 +350,7 @@ public class GameManager : MonoBehaviour
 		}
 		InitializeTiles();
 		print("initialization done");
-		tempTimer = new CountdownTimer(globalVarContainer.globals[level].maxGameTime);
+		gameTimer = new CountdownTimer(globalVarContainer.globals[level].maxGameTime);
 		disasterTimer = new CountdownTimer(30f); // make into first 5 mins immunity
 		climateChangeTimer = new CountdownTimer(globalVarContainer.globals[level].timeUntilClimateChange);
 		climateChangeHasWarned = false;
@@ -369,8 +359,6 @@ public class GameManager : MonoBehaviour
 		timeUntilEnd = new CountdownTimer(60f);
 		gameIsWon = false;
 		timeToKillCorals = false;
-		// ccTimerImage.transform.Find("CCTimeLeft").gameObject.SetActive(false);
-		// ccOverlay.SetActive(false);
 		print("level is " + globalVarContainer.globals[level].level);
 		InitializeGame();
 	}
@@ -472,7 +460,7 @@ public class GameManager : MonoBehaviour
 			fishImageImage.color = Utility.red;
 		}
 		UpdateFishData();
-		timeLeftText.text = Utility.ConvertTimetoMS(tempTimer.currentTime);
+		timeLeftText.text = Utility.ConvertTimetoMS(gameTimer.currentTime);
 	}
 
 	private void Start()
@@ -490,15 +478,60 @@ public class GameManager : MonoBehaviour
 		if (GameEnd.gameHasEnded) return;
 		if (PauseScript.GamePaused) return;
 
-		// updateFishData();
+		_inputHandler.HandleInput();
 
-		// if (resolution.x != Screen.width || resolution.y != Screen.height) {
+		DisasterUpdates();
+		UpdateNursingCorals();
 
-		//     resolution.x = Screen.width;
-		//     resolution.y = Screen.height;
-		// }
+		gameTimer.updateTime();
+		timeLeftText.text = Utility.ConvertTimetoMS(gameTimer.currentTime);
+		if (gameTimer.isDone())
+		{
+			EndTheGame("The reef could not recover...");
+		}
 
-		#region Disaster Happenings
+		if (fishIncome >= globalVarContainer.globals[level].goal)
+		{
+			timeUntilEnd.updateTime();
+		}
+		else
+		{
+			timeUntilEnd.reset();
+		}
+
+		if (timeUntilEnd.isDone())
+		{
+			gameIsWon = true;
+			EndTheGame("You have recovered the reef!");
+		}
+	}
+
+	private void UpdateNursingCorals()
+	{
+		for (int type = 0; type < totalCoralTypes; type++)
+		{
+			foreach (NursingCoral coralTmp in growingCorals[type])
+			{
+				coralTmp.timer.updateTime();
+			}
+			int currentReadyCoralsOfType = GetReadyCoralsPerType(type);
+			int currentTotalCoralsOfType = GetCoralsPerType(type);
+			if (dirtyReadyCoralsPerType[type] != currentReadyCoralsOfType || dirtyTotalCoralsPerType[type] != currentTotalCoralsOfType)
+			{
+				dirtyReadyCoralsPerType[type] = currentReadyCoralsOfType;
+				dirtyTotalCoralsPerType[type] = currentTotalCoralsOfType;
+				QueueStatusChanged?.Invoke(this, new QueueStatusChangedEventArgs
+				{
+					coralType = type,
+					coralReady = currentReadyCoralsOfType,
+					coralTotal = currentTotalCoralsOfType
+				});
+			}
+		}
+	}
+
+	private void DisasterUpdates()
+	{
 		disasterTimer.updateTime();
 		if (disasterTimer.isDone())
 		{
@@ -525,119 +558,19 @@ public class GameManager : MonoBehaviour
 			popupScript.makeEvent(0, "Climate Change has come! Scientists have determined that the increased temperature and ocean acidity has slowed down coral growth! We have to make a greater effort to coral conservation and rehabilitation!");
 			ApplyClimateChange();
 		}
-		#endregion
-
-		#region Keyboard Shortcuts
-		if (Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			GrowCoral(0);
-			ChangeCoral(0);
-		}
-		else if (Input.GetKeyDown(KeyCode.Alpha2))
-		{
-			GrowCoral(1);
-			ChangeCoral(1);
-		}
-		else if (Input.GetKeyDown(KeyCode.Alpha3))
-		{
-			GrowCoral(2);
-			ChangeCoral(2);
-		}
-
-		if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.Z))
-		{
-			ChangeCoral(0);
-		}
-		else if (Input.GetKeyDown(KeyCode.F2) || Input.GetKeyDown(KeyCode.X))
-		{
-			ChangeCoral(1);
-		}
-		else if (Input.GetKeyDown(KeyCode.F3) || Input.GetKeyDown(KeyCode.C))
-		{
-			ChangeCoral(2);
-		}
-
-		if (Input.GetKeyDown(KeyCode.R))
-		{
-			SelectShovel();
-		}
-		#endregion
-
-		if (Input.GetMouseButtonDown(0) && !IsMouseOverUI())
-		{
-			if (shovelChosen)
-			{
-				ShovelArea();
-			}
-			else
-			{
-				PlantCoral(selectedCoral);
-			}
-		}
-
-		_inputHandler.HandleInput();
-
-		for (int type = 0; type < totalCoralTypes; type++)
-		{
-			foreach (NursingCoral coralTmp in growingCorals[type])
-			{
-				coralTmp.timer.updateTime();
-			}
-			int currentReadyCoralsOfType = GetReadyCoralsPerType(type);
-			int currentTotalCoralsOfType = GetCoralsPerType(type);
-			if (dirtyReadyCoralsPerType[type] != currentReadyCoralsOfType || dirtyTotalCoralsPerType[type] != currentTotalCoralsOfType)
-			{
-				dirtyReadyCoralsPerType[type] = currentReadyCoralsOfType;
-				dirtyTotalCoralsPerType[type] = currentTotalCoralsOfType;
-				QueueStatusChanged?.Invoke(this, new QueueStatusChangedEventArgs
-				{
-					coralType = type,
-					coralReady = currentReadyCoralsOfType,
-					coralTotal = currentTotalCoralsOfType
-				});
-			}
-		}
-
-		// cncText.text = GetCoralsInNursery() + "/" + globalVarContainer.globals[level].maxSpaceInNursery + " SLOTS LEFT";
-
-		tempTimer.updateTime();
-		timeLeftText.text = Utility.ConvertTimetoMS(tempTimer.currentTime);
-		if (tempTimer.isDone())
-		{
-			EndTheGame("The reef could not recover...");
-		}
-
-		if (fishIncome >= globalVarContainer.globals[level].goal)
-		{
-			timeUntilEnd.updateTime();
-		}
-		else
-		{
-			timeUntilEnd.reset();
-		}
-
-		if (timeUntilEnd.isDone())
-		{
-			gameIsWon = true;
-			EndTheGame("You have recovered the reef!");
-		}
 	}
-	// can extend this if you want certain UI to be ignored
-	private bool IsMouseOverUI()
-	{
-		return EventSystem.current.IsPointerOverGameObject();
-	}
+
 	private void EndTheGame(string s)
 	{
-		endGameScript.finalStatistics(fishIncome, Utility.ConvertTimetoMS(tempTimer.currentTime));
+		endGameScript.finalStatistics(fishIncome, Utility.ConvertTimetoMS(gameTimer.currentTime));
 		endGameScript.setCongrats((gameIsWon ? GameAssets.instance.gameWinWordArt : GameAssets.instance.gameLoseWordArt));
 		endGameScript.endMessage(s);
 		endGameScript.gameEndReached();
 	}
 
-	private void FeedbackDialogue(string text, float time) => StartCoroutine(ShowMessage(text, time));
+	private void FeedbackDialogue(string text, float time) => StartCoroutine(Co_ShowMessage(text, time));
 
-	IEnumerator ShowMessage(string text, float time)
+	IEnumerator Co_ShowMessage(string text, float time)
 	{
 		// feedbackTextText.text = text;
 		// feedbackTextText.enabled = true;
@@ -646,6 +579,7 @@ public class GameManager : MonoBehaviour
 		// feedbackTextText.enabled = false;
 	}
 
+	// __DECOMPOSE:
 	private void UpdateFishData()
 	{
 		if (GameEnd.gameHasEnded || PauseScript.GamePaused)
@@ -790,7 +724,7 @@ public class GameManager : MonoBehaviour
 	/*
 	 * removing coral
 	 * */
-	private void PlantCoral(int type)
+	public void PlantCoral(int type)
 	{
 		Vector3Int position = GetMouseGridPosition();
 		int readyNum = GetReadyCoralsPerType(type);
@@ -962,7 +896,7 @@ public class GameManager : MonoBehaviour
 			popupScript.makeEvent(1);
 		}
 	}
-	private void ShovelArea()
+	public void ShovelArea()
 	{
 		Vector3Int position = GetMouseGridPosition();
 		if (!Utility.WithinBoardBounds(position, boardSize))
