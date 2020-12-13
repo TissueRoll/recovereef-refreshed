@@ -575,7 +575,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		_inputHandler.MovementControl();
+		_inputHandler.HandleInput();
 
 		for (int type = 0; type < totalCoralTypes; type++)
 		{
