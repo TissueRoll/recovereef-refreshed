@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Assets : MonoBehaviour
+public class GameAssets : MonoBehaviour
 {
 
     // Internal instance reference
-    private static Assets _instance;
+    private static GameAssets _instance;
 
     // Instance reference
-    public static Assets instance
+    public static GameAssets instance
     {
         get
         {
-            if (_instance == null) _instance = Instantiate(Resources.Load<Assets>("GameAssets"));
+            if (_instance == null) _instance = Instantiate(Resources.Load<GameAssets>("GameAssets"));
             return _instance;
         }
     }

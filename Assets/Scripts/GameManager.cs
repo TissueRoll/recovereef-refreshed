@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
+using Assets.Scripts;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class GameManager : MonoBehaviour
 
 	#region Things I Plug in Unity
 #pragma warning disable 0649
-	[SerializeField] private CodeMonkey.MonoBehaviours.CameraFollow cameraFollow;
 	[SerializeField] private Tilemap coralTileMap;
 	[SerializeField] private Tilemap groundTileMap;
 	[SerializeField] private Tilemap substrataTileMap;
@@ -31,7 +31,9 @@ public class GameManager : MonoBehaviour
 	// [SerializeField] private GameObject ccOverlay;
 	[SerializeField] private int level;
 	[SerializeField] private int boardSize;
+	[SerializeField] private InputHandler _inputHandler;
 #pragma warning restore 0649
+	public int Level => level;
 	#endregion
 	#region Components of GameObjects
 	Grid grid;
@@ -68,16 +70,12 @@ public class GameManager : MonoBehaviour
 		{new Vector3Int(1,0,0), new Vector3Int(0,-1,0), new Vector3Int(-1,-1,0), new Vector3Int(-1,0,0), new Vector3Int(-1,1,0), new Vector3Int(0,1,0)},
 		{new Vector3Int(1,0,0), new Vector3Int(1,-1,0), new Vector3Int(0,-1,0), new Vector3Int(-1,0,0), new Vector3Int(0,1,0), new Vector3Int(1,1,0)}
 	};
-	GlobalContainer globalVarContainer;
-	CoralDataContainer coralBaseData;
-	SubstrataDataContainer substrataDataContainer;
-	AlgaeDataContainer algaeDataContainer;
+	public GlobalContainer globalVarContainer;
+	public CoralDataContainer coralBaseData;
+	public SubstrataDataContainer substrataDataContainer;
+	public AlgaeDataContainer algaeDataContainer;
 	#endregion
 	#region Global Changing Values
-	private float zoom;
-	private Vector3 cameraFollowPosition;
-	private Vector3 savedCameraPosition;
-	private bool edgeScrollingEnabled = false;
 	private int selectedCoral = 0;
 	private int fishIncome = 0;
 	private float cfTotalProduction = 0;
@@ -116,7 +114,7 @@ public class GameManager : MonoBehaviour
 	#endregion
 
 	#region Generic Helper Functions
-	private Vector3Int GetMouseGridPosition()
+	private Vector3Int GetMouseGridPosition() //input
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		Vector3 worldPoint = ray.GetPoint(-ray.origin.z / ray.direction.z);
@@ -154,23 +152,23 @@ public class GameManager : MonoBehaviour
 	{
 		int ans = -1;
 		// corals
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralTileBases00, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralTileBases01, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralTileBases02, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralDeadTileBases00, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralDeadTileBases01, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.coralDeadTileBases02, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.coralTileBases00, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.coralTileBases01, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.coralTileBases02, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.coralDeadTileBases00, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.coralDeadTileBases01, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.coralDeadTileBases02, tileBase));
 		// algae
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.algaeTileBases00, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.algaeTileBases01, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.algaeTileBases02, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.algaeTileBases00, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.algaeTileBases01, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.algaeTileBases02, tileBase));
 		// substrata
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.substrataTileBases, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.substrataTileBases, tileBase));
 		// toxic
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.toxicTileBases, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.toxicTileBases, tileBase));
 		// edge
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.edgeGroundTileBases, tileBase));
-		ans = Math.Max(ans, GetIndexOfTileBaseHelper(Assets.instance.edgeSubstrataTileBases, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.edgeGroundTileBases, tileBase));
+		ans = Math.Max(ans, GetIndexOfTileBaseHelper(GameAssets.instance.edgeSubstrataTileBases, tileBase));
 		return ans;
 	}
 	// assumes it's an entity
@@ -198,15 +196,15 @@ public class GameManager : MonoBehaviour
 	{
 		if (GetGrowthLevelOfEntity(tileBase) == "young")
 		{
-			return Assets.instance.coralDeadTileBases00[GetIndexOfTileBase(tileBase)];
+			return GameAssets.instance.coralDeadTileBases00[GetIndexOfTileBase(tileBase)];
 		}
 		else if (GetGrowthLevelOfEntity(tileBase) == "mid")
 		{
-			return Assets.instance.coralDeadTileBases01[GetIndexOfTileBase(tileBase)];
+			return GameAssets.instance.coralDeadTileBases01[GetIndexOfTileBase(tileBase)];
 		}
 		else if (GetGrowthLevelOfEntity(tileBase) == "mature")
 		{
-			return Assets.instance.coralDeadTileBases02[GetIndexOfTileBase(tileBase)];
+			return GameAssets.instance.coralDeadTileBases02[GetIndexOfTileBase(tileBase)];
 		}
 		else
 		{
@@ -353,7 +351,6 @@ public class GameManager : MonoBehaviour
 		coralBaseData = CoralDataContainer.Load("CoralDataXML");
 		algaeDataContainer = AlgaeDataContainer.Load("AlgaeDataXML");
 		totalCoralTypes = coralBaseData.corals.Count;
-		zoom = globalVarContainer.globals[level].zoom;
 		print("XML data loaded");
 		print("initializing tiles...");
 		coralTypeNumbers = new List<int>();
@@ -413,7 +410,7 @@ public class GameManager : MonoBehaviour
 					HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
 					foreach (Vector3Int toxicPos in toxicSpread)
 					{
-						substrataOverlayTileMap.SetTile(toxicPos, Assets.instance.toxicOverlay);
+						substrataOverlayTileMap.SetTile(toxicPos, GameAssets.instance.toxicOverlay);
 					}
 				}
 				else
@@ -428,10 +425,10 @@ public class GameManager : MonoBehaviour
 		{
 			for (int j = -boardSize - 5; j <= boardSize + 5; j++)
 			{
-				substrataOverlayTileMap.SetTile(new Vector3Int(j, i, 0), Assets.instance.algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(j, -i, 0), Assets.instance.algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(i, j, 0), Assets.instance.algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(-i, j, 0), Assets.instance.algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(j, i, 0), GameAssets.instance.algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(j, -i, 0), GameAssets.instance.algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(i, j, 0), GameAssets.instance.algaeEdgeTileBase);
+				substrataOverlayTileMap.SetTile(new Vector3Int(-i, j, 0), GameAssets.instance.algaeEdgeTileBase);
 			}
 		}
 
@@ -480,10 +477,6 @@ public class GameManager : MonoBehaviour
 
 	private void Start()
 	{
-		// sets the cameraFollowPosition to the default 
-		cameraFollowPosition = cameraFollow.transform.position;
-		cameraFollow.Setup(() => cameraFollowPosition, () => zoom);
-		cameraFollow.enabled = true;
 		// __FIX__ MAKE INTO GLOBALS?
 		InvokeRepeating(nameof(UpdateFishData), 0f, 1.0f);
 		InvokeRepeating(nameof(UpdateAllAlgae), 1.0f, 1.0f);
@@ -494,15 +487,8 @@ public class GameManager : MonoBehaviour
 	// __DECOMPOSE: a lot of things can be isolated into their own functions rather than their own regions
 	void Update()
 	{
-		if (GameEnd.gameHasEnded)
-		{
-			return;
-		}
-
-		if (PauseScript.GamePaused)
-		{
-			return;
-		}
+		if (GameEnd.gameHasEnded) return;
+		if (PauseScript.GamePaused) return;
 
 		// updateFishData();
 
@@ -589,19 +575,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		#region Screen Movement
-		// movement of screen
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			edgeScrollingEnabled = !edgeScrollingEnabled;
-			FeedbackDialogue("Edge scrolling is " + (edgeScrollingEnabled ? "enabled!" : "disabled!"), globalVarContainer.globals[level].feedbackDelayTime);
-		}
-		#endregion
-
-		MoveCameraWASD(25f);
-		if (edgeScrollingEnabled) MoveCameraMouseEdge(25f, 10f);
-		ZoomKeys(1.0f);
-		ClampCamera();
+		_inputHandler.MovementControl();
 
 		for (int type = 0; type < totalCoralTypes; type++)
 		{
@@ -656,7 +630,7 @@ public class GameManager : MonoBehaviour
 	private void EndTheGame(string s)
 	{
 		endGameScript.finalStatistics(fishIncome, Utility.ConvertTimetoMS(tempTimer.currentTime));
-		endGameScript.setCongrats((gameIsWon ? Assets.instance.gameWinWordArt : Assets.instance.gameLoseWordArt));
+		endGameScript.setCongrats((gameIsWon ? GameAssets.instance.gameWinWordArt : GameAssets.instance.gameLoseWordArt));
 		endGameScript.endMessage(s);
 		endGameScript.gameEndReached();
 	}
@@ -714,20 +688,20 @@ public class GameManager : MonoBehaviour
 			{
 				algaeCells[key].addMaturity(1);
 				int idx = GetIndexOfTileBase(algaeCells[key].TileBase);
-				if (algaeCells[key].maturity >= 25 && algaeCells[key].TileBase.name != Assets.instance.algaeTileBases02[idx].name)
+				if (algaeCells[key].maturity >= 25 && algaeCells[key].TileBase.name != GameAssets.instance.algaeTileBases02[idx].name)
 				{
-					algaeTileMap.SetTile(key, Assets.instance.algaeTileBases02[idx]);
-					algaeCells[key].TileBase = Assets.instance.algaeTileBases02[idx];
+					algaeTileMap.SetTile(key, GameAssets.instance.algaeTileBases02[idx]);
+					algaeCells[key].TileBase = GameAssets.instance.algaeTileBases02[idx];
 				}
-				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != Assets.instance.algaeTileBases01[idx].name)
+				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != GameAssets.instance.algaeTileBases01[idx].name)
 				{
-					algaeTileMap.SetTile(key, Assets.instance.algaeTileBases01[idx]);
-					algaeCells[key].TileBase = Assets.instance.algaeTileBases01[idx];
+					algaeTileMap.SetTile(key, GameAssets.instance.algaeTileBases01[idx]);
+					algaeCells[key].TileBase = GameAssets.instance.algaeTileBases01[idx];
 				}
-				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != Assets.instance.algaeTileBases00[idx].name)
+				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != GameAssets.instance.algaeTileBases00[idx].name)
 				{
-					algaeTileMap.SetTile(key, Assets.instance.algaeTileBases00[idx]);
-					algaeCells[key].TileBase = Assets.instance.algaeTileBases00[idx];
+					algaeTileMap.SetTile(key, GameAssets.instance.algaeTileBases00[idx]);
+					algaeCells[key].TileBase = GameAssets.instance.algaeTileBases00[idx];
 				}
 			}
 			HashSet<Vector3Int> coralsAround = Utility.Spread(key, 1);
@@ -782,7 +756,7 @@ public class GameManager : MonoBehaviour
 							if (randNum < 60) continue;
 						}
 						// AddAlgaeOnMap(localPlace, algaeCells[key].TileBase, 0);
-						AddAlgaeOnMap(localPlace, Assets.instance.algaeTileBases00[GetIndexOfTileBase(algaeCells[key].TileBase)], 0);
+						AddAlgaeOnMap(localPlace, GameAssets.instance.algaeTileBases00[GetIndexOfTileBase(algaeCells[key].TileBase)], 0);
 						// delete coral under algae
 						RemoveCoralOnMap(localPlace);
 					}
@@ -844,7 +818,7 @@ public class GameManager : MonoBehaviour
 			{
 				growingCorals[type].RemoveAt(tempIdx);
 			}
-			AddCoralOnMap(position, Assets.instance.coralTileBases00[type], 0);
+			AddCoralOnMap(position, GameAssets.instance.coralTileBases00[type], 0);
 		}
 		else if (readyNum == 0 && loadedNum - readyNum > 0)
 		{
@@ -878,20 +852,20 @@ public class GameManager : MonoBehaviour
 				}
 				coralCells[key].addMaturity(1);
 				int idx = GetIndexOfTileBase(coralCells[key].TileBase);
-				if (coralCells[key].maturity >= 25 && coralCells[key].TileBase.name != Assets.instance.coralTileBases02[idx].name)
+				if (coralCells[key].maturity >= 25 && coralCells[key].TileBase.name != GameAssets.instance.coralTileBases02[idx].name)
 				{
-					coralTileMap.SetTile(key, Assets.instance.coralTileBases02[idx]);
-					coralCells[key].TileBase = Assets.instance.coralTileBases02[idx];
+					coralTileMap.SetTile(key, GameAssets.instance.coralTileBases02[idx]);
+					coralCells[key].TileBase = GameAssets.instance.coralTileBases02[idx];
 				}
-				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != Assets.instance.coralTileBases01[idx].name)
+				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != GameAssets.instance.coralTileBases01[idx].name)
 				{
-					coralTileMap.SetTile(key, Assets.instance.coralTileBases01[idx]);
-					coralCells[key].TileBase = Assets.instance.coralTileBases01[idx];
+					coralTileMap.SetTile(key, GameAssets.instance.coralTileBases01[idx]);
+					coralCells[key].TileBase = GameAssets.instance.coralTileBases01[idx];
 				}
-				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != Assets.instance.coralTileBases00[idx].name)
+				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != GameAssets.instance.coralTileBases00[idx].name)
 				{
-					coralTileMap.SetTile(key, Assets.instance.coralTileBases00[idx]);
-					coralCells[key].TileBase = Assets.instance.coralTileBases00[idx];
+					coralTileMap.SetTile(key, GameAssets.instance.coralTileBases00[idx]);
+					coralCells[key].TileBase = GameAssets.instance.coralTileBases00[idx];
 				}
 				if (!economyMachine.CoralWillSurvive(coralCells[key], substrataCells[key], miscFactors - coralSurvivabilityDebuff, groundTileMap.GetTile(key).name))
 				{
@@ -932,7 +906,7 @@ public class GameManager : MonoBehaviour
 						if (!SpaceIsAvailable(localPlace)) continue;
 						if (coralTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || algaeTileMap.HasTile(localPlace)) continue;
 						// AddCoralOnMap(localPlace, coralCells[key].TileBase, 0);
-						AddCoralOnMap(localPlace, Assets.instance.coralTileBases00[GetIndexOfTileBase(coralCells[key].TileBase)], 0);
+						AddCoralOnMap(localPlace, GameAssets.instance.coralTileBases00[GetIndexOfTileBase(coralCells[key].TileBase)], 0);
 					}
 				}
 			}
@@ -969,7 +943,7 @@ public class GameManager : MonoBehaviour
 			Vector3Int pos = new Vector3Int(UnityEngine.Random.Range(-boardSize, boardSize + 1), UnityEngine.Random.Range(-boardSize, boardSize + 1), 0);
 			if (substrataCells.ContainsKey(pos))
 				substrataCells.Remove(pos);
-			substrataTileMap.SetTile(pos, Assets.instance.toxicTileBases[UnityEngine.Random.Range(0, Assets.instance.toxicTileBases.Length)]);
+			substrataTileMap.SetTile(pos, GameAssets.instance.toxicTileBases[UnityEngine.Random.Range(0, GameAssets.instance.toxicTileBases.Length)]);
 			HashSet<Vector3Int> toxicSpread = Utility.Spread(pos, 2);
 			foreach (Vector3Int toxicPos in toxicSpread)
 			{
@@ -983,7 +957,7 @@ public class GameManager : MonoBehaviour
 				{
 					RemoveAlgaeOnMap(toxicPos);
 				}
-				substrataOverlayTileMap.SetTile(toxicPos, Assets.instance.toxicOverlay);
+				substrataOverlayTileMap.SetTile(toxicPos, GameAssets.instance.toxicOverlay);
 			}
 			popupScript.makeEvent(1);
 		}
@@ -1033,77 +1007,4 @@ public class GameManager : MonoBehaviour
 	}
 	#endregion
 
-	#region Camera Movement and Zoom
-	private void MoveCameraWASD(float moveAmount)
-	{
-		if (Input.GetKey(KeyCode.W))
-		{
-			cameraFollowPosition.y += moveAmount * Time.deltaTime;
-		}
-		if (Input.GetKey(KeyCode.A))
-		{
-			cameraFollowPosition.x -= moveAmount * Time.deltaTime;
-		}
-		if (Input.GetKey(KeyCode.S))
-		{
-			cameraFollowPosition.y -= moveAmount * Time.deltaTime;
-		}
-		if (Input.GetKey(KeyCode.D))
-		{
-			cameraFollowPosition.x += moveAmount * Time.deltaTime;
-		}
-	}
-
-	private void MoveCameraMouseEdge(float moveAmount, float edgeSize)
-	{
-		if (Input.mousePosition.x > Screen.width - edgeSize)
-		{
-			cameraFollowPosition.x += moveAmount * Time.deltaTime;
-		}
-		if (Input.mousePosition.x < edgeSize)
-		{
-			cameraFollowPosition.x -= moveAmount * Time.deltaTime;
-		}
-		if (Input.mousePosition.y > Screen.height - edgeSize)
-		{
-			cameraFollowPosition.y += moveAmount * Time.deltaTime;
-		}
-		if (Input.mousePosition.y < edgeSize)
-		{
-			cameraFollowPosition.y -= moveAmount * Time.deltaTime;
-		}
-	}
-
-	private void ZoomKeys(float zoomChangeAmount)
-	{
-		if (Input.GetKey(KeyCode.Q))
-		{
-			zoom -= zoomChangeAmount * Time.deltaTime;
-		}
-		if (Input.GetKey(KeyCode.E))
-		{
-			zoom += zoomChangeAmount * Time.deltaTime;
-		}
-
-		if (Input.mouseScrollDelta.y > 0)
-		{
-			zoom -= zoomChangeAmount;
-		}
-		if (Input.mouseScrollDelta.y < 0)
-		{
-			zoom += zoomChangeAmount;
-		}
-
-		zoom = Mathf.Clamp(zoom, 1f, 5f);
-	}
-
-	private void ClampCamera()
-	{
-		cameraFollowPosition = new Vector3(
-			Mathf.Clamp(cameraFollowPosition.x, -11.25f, 11.25f),
-			Mathf.Clamp(cameraFollowPosition.y, -18.75f, 18.75f),
-			cameraFollowPosition.z
-		);
-	}
-	#endregion
 }

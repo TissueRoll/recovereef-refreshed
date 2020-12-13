@@ -31,31 +31,31 @@ public class PopupScript : MonoBehaviour
 
 	public void makeEvent(int type, string forced = "")
 	{
-		popupButton.GetComponent<UnityEngine.UI.Image>().sprite = Assets.instance.normalButtonSprite;
+		popupButton.GetComponent<UnityEngine.UI.Image>().sprite = GameAssets.instance.normalButtonSprite;
 		if (forced.Length > 0)
 		{
-			SetPopupSprite(Assets.instance.climateChangeDisasterSprite);
+			SetPopupSprite(GameAssets.instance.climateChangeDisasterSprite);
 			SetPopupMessage(forced);
-			popupButton.GetComponent<UnityEngine.UI.Image>().sprite = Assets.instance.climateButtonSprite;
+			popupButton.GetComponent<UnityEngine.UI.Image>().sprite = GameAssets.instance.climateButtonSprite;
 		}
 		else if (type == 1)
 		{ // toxic waste
-			SetPopupSprite(Assets.instance.toxicWasteDisasterSprite);
+			SetPopupSprite(GameAssets.instance.toxicWasteDisasterSprite);
 			SetPopupMessage("An irresponsible company just dumped a barrel of toxic waste into your coral reef! Part of your reef has now become permanently affected.");
 		}
 		else if (type == 2)
 		{ // tourists
-			SetPopupSprite(Assets.instance.touristsDisasterSprite);
+			SetPopupSprite(GameAssets.instance.touristsDisasterSprite);
 			SetPopupMessage("A group of tourists came and vandalized part of your reef, not knowing corals are animals. Part of your coral population has died.");
 		}
 		else if (type == 3)
 		{ // bombing
-			SetPopupSprite(Assets.instance.bombingDisasterSprite);
+			SetPopupSprite(GameAssets.instance.bombingDisasterSprite);
 			SetPopupMessage("Fishermen have just thrown bombs into your reef in the hopes of catching some fish! Some of your corals have died.");
 		}
 		else
 		{ // UNKNOWN EVENT
-			SetPopupSprite(Assets.instance.defaultPopupSprite);
+			SetPopupSprite(GameAssets.instance.defaultPopupSprite);
 			SetPopupMessage("An event has happened.");
 		}
 		OpenPopup();
