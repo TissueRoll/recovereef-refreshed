@@ -19,9 +19,6 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private Tilemap substrataTileMap;
 	[SerializeField] private Tilemap substrataOverlayTileMap;
 	[SerializeField] private Tilemap algaeTileMap;
-	[SerializeField] private GameObject fishDisplay;
-	[SerializeField] private GameObject fishImage;
-	[SerializeField] private GameObject timeLeft;
 	[SerializeField] private GameObject popupCanvas;
 	[SerializeField] private GameObject endGameScreen;
 	[SerializeField] private int level;
@@ -32,17 +29,11 @@ public class GameManager : MonoBehaviour
 	#endregion
 	#region Components of GameObjects
 	Grid grid;
-	TMPro.TextMeshProUGUI fishDisplayText;
-	UnityEngine.UI.Image fishImageImage;
-	TMPro.TextMeshProUGUI timeLeftText;
 	GameEnd endGameScript;
 	PopupScript popupScript;
 	private void InitializeComponents()
 	{
 		grid = GameObject.Find("Grid").GetComponent<Grid>();
-		fishDisplayText = fishDisplay.GetComponent<TMPro.TextMeshProUGUI>();
-		fishImageImage = fishImage.GetComponent<UnityEngine.UI.Image>();
-		timeLeftText = timeLeft.GetComponent<TMPro.TextMeshProUGUI>();
 		endGameScript = endGameScreen.GetComponent<GameEnd>();
 		popupScript = popupCanvas.GetComponent<PopupScript>();
 	}
@@ -63,10 +54,10 @@ public class GameManager : MonoBehaviour
 	public AlgaeDataContainer algaeDataContainer;
 	#endregion
 	#region Global Changing Values
-	private int fishIncome = 0;
+	public int fishIncome = 0;
 	private float cfTotalProduction = 0;
 	private float hfTotalProduction = 0;
-	private CountdownTimer gameTimer;
+	public CountdownTimer gameTimer;
 	// dirty flags
 	private List<int> dirtyReadyCoralsPerType;
 	private List<int> dirtyTotalCoralsPerType;
@@ -360,9 +351,7 @@ public class GameManager : MonoBehaviour
 		gameIsWon = false;
 		timeToKillCorals = false;
 		print("level is " + globalVarContainer.globals[level].level);
-		InitializeGame();
 	}
-
 
 	private void InitializeTiles()
 	{
@@ -448,25 +437,10 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	private void InitializeGame()
-	{
-		fishDisplayText.text = "Fish Income: 0";
-		if (hfTotalProduction >= cfTotalProduction)
-		{
-			fishImageImage.color = Utility.green;
-		}
-		else
-		{
-			fishImageImage.color = Utility.red;
-		}
-		UpdateFishData();
-		timeLeftText.text = Utility.ConvertTimetoMS(gameTimer.currentTime);
-	}
-
 	private void Start()
 	{
 		// __FIX__ MAKE INTO GLOBALS?
-		InvokeRepeating(nameof(UpdateFishData), 0f, 1.0f);
+		// InvokeRepeating(nameof(UpdateFishData), 0f, 1.0f);
 		InvokeRepeating(nameof(UpdateAllAlgae), 1.0f, 1.0f);
 		InvokeRepeating(nameof(UpdateAllCoral), 2.0f, 2.0f);
 		InvokeRepeating(nameof(KillCorals), 1.0f, 3.0f);
@@ -480,11 +454,11 @@ public class GameManager : MonoBehaviour
 
 		_inputHandler.HandleInput();
 
+		UpdateFishOutput();
 		DisasterUpdates();
 		UpdateNursingCorals();
 
 		gameTimer.updateTime();
-		timeLeftText.text = Utility.ConvertTimetoMS(gameTimer.currentTime);
 		if (gameTimer.isDone())
 		{
 			EndTheGame("The reef could not recover...");
@@ -579,31 +553,22 @@ public class GameManager : MonoBehaviour
 		// feedbackTextText.enabled = false;
 	}
 
-	// __DECOMPOSE:
-	private void UpdateFishData()
+	/*
+	 * Computes for the prosperity state of the fish just for display.
+	 */
+	public int FishProsperityState()
 	{
-		if (GameEnd.gameHasEnded || PauseScript.GamePaused)
-			return;
-		UpdateFishOutput();
-
-		fishDisplayText.text = "Fish Income: " + fishIncome;
 		if (hfTotalProduction >= cfTotalProduction)
 		{
-			if (economyMachine.IsAverageGood())
-			{
-				fishImageImage.color = Utility.gold;
-			}
-			else
-			{
-				fishImageImage.color = Utility.green;
-			}
-		}
+			return 1;
+		} 
 		else
 		{
-			fishImageImage.color = Utility.red;
+			return 0;
 		}
 	}
 
+	// __DECOMPOSE
 	// __ECONOMY__
 	#region Algae Updates
 	private void UpdateAllAlgae()
@@ -933,12 +898,9 @@ public class GameManager : MonoBehaviour
 	#endregion
 
 	// __ECONOMY__
-	#region Misc Updates
 	private void UpdateFishOutput()
 	{
 		economyMachine.UpdateHFCF(hfTotalProduction, cfTotalProduction);
 		fishIncome = (int)Math.Round(economyMachine.GetTotalFish(coralTypeNumbers));
 	}
-	#endregion
-
 }
