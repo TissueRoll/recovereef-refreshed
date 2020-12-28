@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
 	private List<int> coralTypeNumbers;
 	private Vector2 resolution;
 	private int totalCoralTypes = 3;
-	
+	public CountdownTimer shovelTimer;
 	#endregion
 
 	#region Event Stuff
@@ -435,6 +435,8 @@ public class GameManager : MonoBehaviour
 				AddAlgaeOnMap(pos, algaeTileMap.GetTile(pos), 26);
 			}
 		}
+
+		shovelTimer = new CountdownTimer(120f);
 	}
 
 	private void Start()
@@ -457,6 +459,7 @@ public class GameManager : MonoBehaviour
 		UpdateFishOutput();
 		DisasterUpdates();
 		UpdateNursingCorals();
+		UpdateShovelTimer();
 
 		gameTimer.updateTime();
 		if (gameTimer.isDone())
@@ -478,6 +481,12 @@ public class GameManager : MonoBehaviour
 			gameIsWon = true;
 			EndTheGame("You have recovered the reef!");
 		}
+	}
+
+	private void UpdateShovelTimer()
+	{
+		shovelTimer.updateTime();
+
 	}
 
 	private void UpdateNursingCorals()
@@ -861,8 +870,21 @@ public class GameManager : MonoBehaviour
 			popupScript.makeEvent(1);
 		}
 	}
+
+	public void QueueShovel()
+	{
+		if (shovelTimer.isDone())
+		{
+			shovelTimer.reset();
+		}
+		else
+		{
+			FeedbackDialogue("Currently queueing a shovel! Can't queue multiple shovels at once.", 2f);
+		}
+	}
 	public void ShovelArea()
 	{
+		if (!shovelTimer.isDone()) return;
 		Vector3Int position = GetMouseGridPosition();
 		if (!Utility.WithinBoardBounds(position, boardSize))
 		{
