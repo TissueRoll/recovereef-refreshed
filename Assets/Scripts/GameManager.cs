@@ -375,7 +375,7 @@ public class GameManager : MonoBehaviour
 		foreach (Vector3Int pos in substrataTileMap.cellBounds.allPositionsWithin)
 		{
 			if (!substrataTileMap.HasTile(pos)) continue; // does this case even happen???
-			if (!Utility.WithinBoardBounds(pos, boardSize))
+			if (!Utility.WithinBoardBounds(pos, boardSize) && substrataTileMap.GetTile(pos).name.Contains("edge"))
 			{
 				substrataTileMap.SetTile(pos, null);
 			}

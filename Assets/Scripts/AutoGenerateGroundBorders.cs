@@ -12,6 +12,7 @@ namespace Assets.Scripts
 		[SerializeField] private TileBase[] edge_tilebases;
 		public int border = 15;
 		private int prev_border = -1;
+		public bool resetBorder = false;
 		// Use this for initialization
 		void Start()
 		{
@@ -21,11 +22,12 @@ namespace Assets.Scripts
 		// Update is called once per frame
 		void Update()
 		{
-			if (prev_border != border)
+			if (prev_border != border || resetBorder)
 			{
 				ClearBorders();
 				FillBorders();
 				prev_border = border;
+				resetBorder = false;
 			}
 		}
 
