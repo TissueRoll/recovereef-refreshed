@@ -397,18 +397,6 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		// assigning the borders of the level
-		for (int i = boardSize + 1; i <= boardSize + 5; i++)
-		{
-			for (int j = -boardSize - 5; j <= boardSize + 5; j++)
-			{
-				substrataOverlayTileMap.SetTile(new Vector3Int(j, i, 0), GameAssets.instance.algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(j, -i, 0), GameAssets.instance.algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(i, j, 0), GameAssets.instance.algaeEdgeTileBase);
-				substrataOverlayTileMap.SetTile(new Vector3Int(-i, j, 0), GameAssets.instance.algaeEdgeTileBase);
-			}
-		}
-
 		// Setting the tiles in the tilemap to the coralCells dictionary
 		foreach (Vector3Int pos in coralTileMap.cellBounds.allPositionsWithin)
 		{
