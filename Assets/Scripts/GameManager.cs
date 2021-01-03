@@ -64,8 +64,8 @@ public class GameManager : MonoBehaviour
 	private List<NursingCoral>[] growingCorals;
 	private CountdownTimer disasterTimer;
 	private CountdownTimer climateChangeTimer;
-	private bool climateChangeHasWarned;
-	private bool climateChangeHasHappened;
+	public bool climateChangeHasWarned;
+	public bool climateChangeHasHappened;
 	private int coralPropagationDebuff = 0;
 	private int coralSurvivabilityDebuff = 0;
 	private EconomyMachine economyMachine;
@@ -239,6 +239,10 @@ public class GameManager : MonoBehaviour
 			best = Math.Max(best, coral.timer.percentComplete);
 		}
 		return best;
+	}
+	public float GetClimateChangeProgress()
+	{
+		return climateChangeTimer.percentComplete;
 	}
 	/*
 	 * Programmer note: by nature of the new system, the ready coral is ALWAYS in front of the list
