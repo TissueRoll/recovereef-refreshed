@@ -331,7 +331,7 @@ public class GameManager : MonoBehaviour
 		}
 		resolution = new Vector2(Screen.width, Screen.height);
 		InitializeComponents();
-		endGameScript.resetEndScreen();
+		endGameScript.ResetEndScreen();
 		print("loading XML data...");
 		globalVarContainer = GlobalContainer.Load("GlobalsXML");
 		substrataDataContainer = SubstrataDataContainer.Load("SubstrataXML");
@@ -539,10 +539,10 @@ public class GameManager : MonoBehaviour
 
 	private void EndTheGame(string s)
 	{
-		endGameScript.finalStatistics(fishIncome, Utility.ConvertTimetoMS(gameTimer.currentTime));
-		endGameScript.setCongrats((gameIsWon ? GameAssets.instance.gameWinWordArt : GameAssets.instance.gameLoseWordArt));
-		endGameScript.endMessage(s);
-		endGameScript.gameEndReached();
+		endGameScript.FinalStatistics(fishIncome, Utility.ConvertTimetoMS(gameTimer.currentTime));
+		endGameScript.SetCongrats((gameIsWon ? GameAssets.instance.gameWinWordArt : GameAssets.instance.gameLoseWordArt));
+		endGameScript.EndMessage(s);
+		endGameScript.GameEndReached();
 	}
 
 	/*
