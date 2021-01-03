@@ -88,6 +88,12 @@ public class GameManager : MonoBehaviour
 	}
 	public event EventHandler<QueueStatusChangedEventArgs> QueueStatusChanged;
 	
+	public class FeedbackTextStatusEventArgs : EventArgs
+	{
+		public string feedbackTextContent;
+		public float feedbackTextDuration;
+	}
+	public event EventHandler<FeedbackTextStatusEventArgs> FeedbackTextStatus;
 	#endregion
 
 	#region Generic Helper Functions
@@ -539,17 +545,6 @@ public class GameManager : MonoBehaviour
 		endGameScript.gameEndReached();
 	}
 
-	private void FeedbackDialogue(string text, float time) => StartCoroutine(Co_ShowMessage(text, time));
-
-	IEnumerator Co_ShowMessage(string text, float time)
-	{
-		// feedbackTextText.text = text;
-		// feedbackTextText.enabled = true;
-		Debug.Log(text);
-		yield return new WaitForSeconds(time);
-		// feedbackTextText.enabled = false;
-	}
-
 	/*
 	 * Computes for the prosperity state of the fish just for display.
 	 */
@@ -679,7 +674,11 @@ public class GameManager : MonoBehaviour
 		}
 		else if (!spaceInNursery)
 		{
-			FeedbackDialogue("Nursery is at maximum capacity.", globalVarContainer.globals[level].feedbackDelayTime);
+			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
+			{
+				feedbackTextContent = "Nursery is at maximum capacity.",
+				feedbackTextDuration = globalVarContainer.globals[level].feedbackDelayTime
+			});
 		}
 	}
 
@@ -693,19 +692,35 @@ public class GameManager : MonoBehaviour
 		int loadedNum = GetCoralsPerType(type);
 		if (!Utility.WithinBoardBounds(position, boardSize))
 		{
-			FeedbackDialogue("Can't put corals out of bounds!", globalVarContainer.globals[level].feedbackDelayTime);
+			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
+			{
+				feedbackTextContent = "Can't put corals out of bounds!",
+				feedbackTextDuration = globalVarContainer.globals[level].feedbackDelayTime
+			});
 		}
 		else if (coralTileMap.HasTile(position))
 		{
-			FeedbackDialogue("Can't put corals on top of other corals!.", globalVarContainer.globals[level].feedbackDelayTime);
+			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
+			{
+				feedbackTextContent = "Can't put corals on top of other corals!",
+				feedbackTextDuration = globalVarContainer.globals[level].feedbackDelayTime
+			});
 		}
 		else if (algaeTileMap.HasTile(position))
 		{
-			FeedbackDialogue("Can't put corals on top of algae! The coral will die!", globalVarContainer.globals[level].feedbackDelayTime);
+			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
+			{
+				feedbackTextContent = "Can't put corals on top of algae! The coral will die!",
+				feedbackTextDuration = globalVarContainer.globals[level].feedbackDelayTime
+			});
 		}
 		else if (substrataOverlayTileMap.HasTile(position))
 		{
-			FeedbackDialogue("This is a toxic tile! Corals won't survive here.", globalVarContainer.globals[level].feedbackDelayTime);
+			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
+			{
+				feedbackTextContent = "This is a toxic tile! Corals won't survive here.",
+				feedbackTextDuration = globalVarContainer.globals[level].feedbackDelayTime
+			});
 		}
 		else if ((substrataTileMap.HasTile(position) || substrataCells.ContainsKey(position)) && readyNum > 0)
 		{
@@ -725,7 +740,11 @@ public class GameManager : MonoBehaviour
 				minTime = Math.Min(minTime, coral.timer.currentTime);
 			}
 			string t = "Soonest to mature coral of this type has " + Utility.ConvertTimetoMS(minTime) + " time left.";
-			FeedbackDialogue(t, globalVarContainer.globals[level].feedbackDelayTime);
+			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
+			{
+				feedbackTextContent = t,
+				feedbackTextDuration = globalVarContainer.globals[level].feedbackDelayTime
+			});
 		}
 	}
 	private void UpdateCoralSurvivability()
@@ -867,7 +886,11 @@ public class GameManager : MonoBehaviour
 		}
 		else
 		{
-			FeedbackDialogue("Currently queueing a shovel! Can't queue multiple shovels at once.", 2f);
+			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
+			{
+				feedbackTextContent = "Currently queueing a shovel! Can't queue multiple shovels at once.",
+				feedbackTextDuration = 2f
+			});
 		}
 	}
 	public void ShovelArea()
