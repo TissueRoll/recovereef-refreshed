@@ -448,6 +448,11 @@ public class GameManager : MonoBehaviour
 		if (GameEnd.gameHasEnded) return;
 		if (PauseScript.GamePaused) return;
 
+		if (Input.GetKeyDown(KeyCode.Backspace))
+		{
+			EndTheGame("abc");
+		}
+
 		_inputHandler.HandleInput();
 
 		UpdateFishOutput();
@@ -877,14 +882,10 @@ public class GameManager : MonoBehaviour
 			popupScript.makeEvent(1);
 		}
 	}
-
+	// __UNUSED
 	public void QueueShovel()
 	{
-		if (shovelTimer.isDone())
-		{
-			shovelTimer.reset();
-		}
-		else
+		if (!shovelTimer.isDone())
 		{
 			FeedbackTextStatus?.Invoke(this, new FeedbackTextStatusEventArgs
 			{
@@ -916,6 +917,7 @@ public class GameManager : MonoBehaviour
 					RemoveAlgaeOnMap(location);
 				}
 			}
+			shovelTimer.reset();
 		}
 		else
 		{

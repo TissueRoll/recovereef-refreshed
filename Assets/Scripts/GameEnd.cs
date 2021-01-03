@@ -7,21 +7,14 @@ public class GameEnd : MonoBehaviour
 {
 	public static bool gameHasEnded = false;
 	
-	public GameObject gameEndCanvas;
-	public GameObject resultGreeting;
-	public GameObject statText;
-	public GameObject flavorText;
+	[SerializeField] private GameObject gameEndCanvas;
+	[SerializeField] private GameObject resultGreeting;
+	[SerializeField] private GameObject statText;
+	[SerializeField] private GameObject flavorText;
 
 	private UnityEngine.UI.Image resultGreetingImage;
 	private TMPro.TextMeshProUGUI statTextContent;
 	private TMPro.TextMeshProUGUI flavorTextContent;
-
-	private void Awake()
-	{
-		resultGreetingImage = resultGreeting.GetComponent<UnityEngine.UI.Image>();
-		statTextContent = statText.GetComponent<TMPro.TextMeshProUGUI>();
-		flavorTextContent = flavorText.GetComponent<TMPro.TextMeshProUGUI>();
-	}
 
 	public void GameEndReached()
 	{
@@ -29,19 +22,25 @@ public class GameEnd : MonoBehaviour
 		gameEndCanvas.SetActive(true);
 		Time.timeScale = 0f;
 	}
-
+	// i have no idea why i have to do it this way
 	public void SetCongrats(Sprite wordArt)
 	{
+		if (resultGreetingImage == null)
+			resultGreetingImage = resultGreeting.GetComponent<UnityEngine.UI.Image>();
 		resultGreetingImage.sprite = wordArt;
 	}
 
 	public void FinalStatistics(int fishIncome, string timeLeft)
 	{
+		if (statTextContent == null)
+			statTextContent = statText.GetComponent<TMPro.TextMeshProUGUI>();
 		statTextContent.text = "Fish Income: " + fishIncome + "\nTime Left: " + timeLeft;
 	}
 
 	public void EndMessage(string s)
 	{
+		if (flavorTextContent == null)
+			flavorTextContent = flavorText.GetComponent<TMPro.TextMeshProUGUI>();
 		flavorTextContent.text = s;
 	}
 
