@@ -37,7 +37,7 @@ public class PauseScript : MonoBehaviour
 		SettingsActive = true;
 	}
 
-	void SettingsOFF()
+	public void SettingsOFF()
 	{
 		settingsMenuUI.SetActive(false);
 		SettingsActive = false;
@@ -52,7 +52,7 @@ public class PauseScript : MonoBehaviour
 		GamePaused = false;
 	}
 
-	void Pause()
+	public void Pause()
 	{
 		pauseMenuUI.SetActive(true);
 		Time.timeScale = 0f;
