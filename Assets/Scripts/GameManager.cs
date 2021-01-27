@@ -87,6 +87,12 @@ public class GameManager : MonoBehaviour
 		public int coralTotal;
 	}
 	public event EventHandler<QueueStatusChangedEventArgs> QueueStatusChanged;
+
+	public class SelectionStatusChangedEventArgs : EventArgs
+	{
+		public int coralType;
+	}
+	public event EventHandler<SelectionStatusChangedEventArgs> SelectionStatusChanged;
 	
 	public class FeedbackTextStatusEventArgs : EventArgs
 	{
@@ -202,11 +208,19 @@ public class GameManager : MonoBehaviour
 	{
 		selectedCoral = select;
 		shovelChosen = false;
+		SelectionStatusChanged?.Invoke(this, new SelectionStatusChangedEventArgs
+		{
+			coralType = select
+		});
 	}
 	public void SelectShovel()
 	{
 		selectedCoral = 3;
 		shovelChosen = true;
+		SelectionStatusChanged?.Invoke(this, new SelectionStatusChangedEventArgs
+		{
+			coralType = 3
+		});
 	}
 	private int GetCoralsPerType(int type)
 	{

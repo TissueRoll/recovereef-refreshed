@@ -20,7 +20,19 @@ public class ButtonUIController : MonoBehaviour
         bar.maximum = 1.0f;
         bar.current = GameManager.instance.GetSoonestToMatureCoralPercent(type); // maybe crappy dependency but whatever
         GameManager.instance.QueueStatusChanged += ChangeAmount;
+        GameManager.instance.SelectionStatusChanged += SelectionUpdate;
     }
+
+    private void SelectionUpdate(object sender, GameManager.SelectionStatusChangedEventArgs e)
+	{
+        if (type == e.coralType)
+		{
+            // update visual
+		} else
+		{
+            // reset visual back to normal
+		}
+	}
 
     private void ChangeAmount(object sender, GameManager.QueueStatusChangedEventArgs e)
 	{
