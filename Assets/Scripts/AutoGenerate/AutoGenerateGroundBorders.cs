@@ -3,17 +3,16 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Linq;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.AutoGenerate
 {
 	[ExecuteInEditMode()]
-	public class AutoGenerateSubstrataBorders : MonoBehaviour
+	public class AutoGenerateGroundBorders : MonoBehaviour
 	{
 		[SerializeField] private Tilemap tilemap;
 		[SerializeField] private TileBase[] edge_tilebases;
 		public int border = 15;
 		private int prev_border = -1;
 		public bool resetBorder = false;
-
 		// Use this for initialization
 		void Start()
 		{
@@ -36,7 +35,7 @@ namespace Assets.Scripts
 		{
 			foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
 			{
-				if (edge_tilebases.Contains(tilemap.GetTile(pos))) 
+				if (edge_tilebases.Contains(tilemap.GetTile(pos)))
 				{
 					tilemap.SetTile(pos, null);
 				}
@@ -50,23 +49,10 @@ namespace Assets.Scripts
 			{
 				for (int j = -border - 5; j <= border + 5; j++)
 				{
-					int temp;
-
-					temp = UnityEngine.Random.Range(0, edge_tilebases.Length + 1);
-					if (temp < edge_tilebases.Length)
-						tilemap.SetTile(new Vector3Int(j, i, 0), edge_tilebases[temp]);
-
-					temp = UnityEngine.Random.Range(0, edge_tilebases.Length + 1);
-					if (temp < edge_tilebases.Length)
-						tilemap.SetTile(new Vector3Int(j, -i, 0), edge_tilebases[temp]);
-
-					temp = UnityEngine.Random.Range(0, edge_tilebases.Length + 1);
-					if (temp < edge_tilebases.Length)
-						tilemap.SetTile(new Vector3Int(i, j, 0), edge_tilebases[temp]);
-
-					temp = UnityEngine.Random.Range(0, edge_tilebases.Length + 1);
-					if (temp < edge_tilebases.Length)
-						tilemap.SetTile(new Vector3Int(-i, j, 0), edge_tilebases[temp]);
+					tilemap.SetTile(new Vector3Int(j, i, 0), edge_tilebases[Random.Range(0, edge_tilebases.Length)]);
+					tilemap.SetTile(new Vector3Int(j, -i, 0), edge_tilebases[Random.Range(0, edge_tilebases.Length)]);
+					tilemap.SetTile(new Vector3Int(i, j, 0), edge_tilebases[Random.Range(0, edge_tilebases.Length)]);
+					tilemap.SetTile(new Vector3Int(-i, j, 0), edge_tilebases[Random.Range(0, edge_tilebases.Length)]);
 				}
 			}
 		}

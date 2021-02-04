@@ -3,16 +3,17 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Linq;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.AutoGenerate
 {
 	[ExecuteInEditMode()]
-	public class AutoGenerateGroundBorders : MonoBehaviour
+	public class AutoGenerateSubstrataBorders : MonoBehaviour
 	{
 		[SerializeField] private Tilemap tilemap;
 		[SerializeField] private TileBase[] edge_tilebases;
 		public int border = 15;
 		private int prev_border = -1;
 		public bool resetBorder = false;
+
 		// Use this for initialization
 		void Start()
 		{
@@ -49,10 +50,23 @@ namespace Assets.Scripts
 			{
 				for (int j = -border - 5; j <= border + 5; j++)
 				{
-					tilemap.SetTile(new Vector3Int(j, i, 0), edge_tilebases[UnityEngine.Random.Range(0, edge_tilebases.Length)]);
-					tilemap.SetTile(new Vector3Int(j, -i, 0), edge_tilebases[UnityEngine.Random.Range(0, edge_tilebases.Length)]);
-					tilemap.SetTile(new Vector3Int(i, j, 0), edge_tilebases[UnityEngine.Random.Range(0, edge_tilebases.Length)]);
-					tilemap.SetTile(new Vector3Int(-i, j, 0), edge_tilebases[UnityEngine.Random.Range(0, edge_tilebases.Length)]);
+					int temp;
+
+					temp = Random.Range(0, edge_tilebases.Length + 1);
+					if (temp < edge_tilebases.Length)
+						tilemap.SetTile(new Vector3Int(j, i, 0), edge_tilebases[temp]);
+
+					temp = Random.Range(0, edge_tilebases.Length + 1);
+					if (temp < edge_tilebases.Length)
+						tilemap.SetTile(new Vector3Int(j, -i, 0), edge_tilebases[temp]);
+
+					temp = Random.Range(0, edge_tilebases.Length + 1);
+					if (temp < edge_tilebases.Length)
+						tilemap.SetTile(new Vector3Int(i, j, 0), edge_tilebases[temp]);
+
+					temp = Random.Range(0, edge_tilebases.Length + 1);
+					if (temp < edge_tilebases.Length)
+						tilemap.SetTile(new Vector3Int(-i, j, 0), edge_tilebases[temp]);
 				}
 			}
 		}
