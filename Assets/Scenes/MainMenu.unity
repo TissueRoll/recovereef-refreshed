@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 259659903}
   - component: {fileID: 259659902}
   m_Layer: 5
-  m_Name: Training
+  m_Name: Select Level
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,7 +288,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 452, y: -318}
-  m_SizeDelta: {x: 515.5381, y: 99.06256}
+  m_SizeDelta: {x: 515.5394, y: 99.06256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &259659902
 MonoBehaviour:
@@ -698,7 +698,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: QUIT
+  m_text: Quit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bddc0055be1820c4791d0efad7615218, type: 2}
   m_sharedMaterial: {fileID: 7888605796823392062, guid: bddc0055be1820c4791d0efad7615218,
@@ -832,7 +832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SETTINGS
+  m_text: Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bddc0055be1820c4791d0efad7615218, type: 2}
   m_sharedMaterial: {fileID: 7888605796823392062, guid: bddc0055be1820c4791d0efad7615218,
@@ -860,7 +860,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.5
+  m_fontSize: 44.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -966,7 +966,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TRAINING PLAY
+  m_text: Select Level
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bddc0055be1820c4791d0efad7615218, type: 2}
   m_sharedMaterial: {fileID: 7888605796823392062, guid: bddc0055be1820c4791d0efad7615218,
@@ -994,7 +994,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 61.6
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1370,7 +1370,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: FULL PLAY
+  m_text: Tutorial
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bddc0055be1820c4791d0efad7615218, type: 2}
   m_sharedMaterial: {fileID: 7888605796823392062, guid: bddc0055be1820c4791d0efad7615218,
@@ -1609,7 +1609,7 @@ GameObject:
   - component: {fileID: 2052243328}
   - component: {fileID: 2052243327}
   m_Layer: 5
-  m_Name: Full Play
+  m_Name: Tutorial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
