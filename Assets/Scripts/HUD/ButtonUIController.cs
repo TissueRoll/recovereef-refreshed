@@ -11,6 +11,11 @@ namespace Assets.Scripts.HUD
 		private ProgressBar bar;
 		private TMPro.TextMeshProUGUI ready;
 		private TMPro.TextMeshProUGUI total;
+		private UnityEngine.UI.Image image;
+		private bool pulsing = false;
+		private float max_pulse_val = 1f;
+		private float min_pulse_val = 0.5f;
+		private float t = 1f;
 
 		// Start is called before the first frame update
 		void Start()
@@ -18,11 +23,13 @@ namespace Assets.Scripts.HUD
 			bar = obj.GetComponent<ProgressBar>();
 			ready = gameObject.transform.Find("Ready").GetComponent<TMPro.TextMeshProUGUI>();
 			total = gameObject.transform.Find("Total").GetComponent<TMPro.TextMeshProUGUI>();
+			image = gameObject.transform.Find("Image").GetComponent<UnityEngine.UI.Image>();
 			bar.minimum = 0.0f;
 			bar.maximum = 1.0f;
 			bar.current = GameManager.instance.GetSoonestToMatureCoralPercent(type); // maybe crappy dependency but whatever
 			GameManager.instance.QueueStatusChanged += ChangeAmount;
 			GameManager.instance.SelectionStatusChanged += SelectionUpdate;
+			pulsing = false;
 		}
 
 		private void SelectionUpdate(object sender, GameManager.SelectionStatusChangedEventArgs e)
@@ -30,10 +37,12 @@ namespace Assets.Scripts.HUD
 			if (type == e.coralType)
 			{
 				// update visual
+				pulsing = true;
 			}
 			else
 			{
 				// reset visual back to normal
+				pulsing = false;
 			}
 		}
 
@@ -55,6 +64,28 @@ namespace Assets.Scripts.HUD
 		void Update()
 		{
 			bar.current = GameManager.instance.GetSoonestToMatureCoralPercent(type);
+			if (pulsing)
+			{
+				float alpha = Mathf.Lerp(min_pulse_val, max_pulse_val, t);
+				Color color = image.color;
+				color.a = alpha;
+				image.color = color;
+
+				t += 3f * Time.deltaTime;
+				if (t > 1.0f)
+				{
+					float tmp = max_pulse_val;
+					max_pulse_val = min_pulse_val;
+					min_pulse_val = tmp;
+					t = 0.0f;
+				}
+			}
+			else
+			{
+				Color color = image.color;
+				color.a = 1f;
+				image.color = color;
+			}
 		}
 	}
 }
