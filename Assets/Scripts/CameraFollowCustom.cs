@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// seems to be unused; consider deleting
 public class CameraFollow : MonoBehaviour
 {
 	private Camera myCamera;

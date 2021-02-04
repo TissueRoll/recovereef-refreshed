@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// seems to be old code; consider deleting
 public class MenuAnimator : MonoBehaviour
 {
 	[SerializeField] private GameObject thing;

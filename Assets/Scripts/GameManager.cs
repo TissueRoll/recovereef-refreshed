@@ -6,7 +6,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
-using Assets.Scripts;
+using Assets.Scripts.Inputs;
+using Assets.Scripts.EntityClasses;
 
 public class GameManager : MonoBehaviour
 {

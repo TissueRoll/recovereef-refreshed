@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Inputs
 {
 	public class FieldControlHandler : MonoBehaviour
 	{

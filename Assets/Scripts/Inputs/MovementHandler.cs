@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Inputs
 {
 	public class MovementHandler : MonoBehaviour
 	{

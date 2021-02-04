@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Inputs
 {
 	public class InputHandler : MonoBehaviour
 	{
@@ -9,7 +9,7 @@ namespace Assets.Scripts
 		[SerializeField] private FieldControlHandler _fieldControlHandler;
 		private void Awake()
 		{
-			
+
 		}
 		// Use this for initialization
 		void Start()
