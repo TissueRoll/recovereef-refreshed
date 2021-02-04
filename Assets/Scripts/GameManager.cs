@@ -101,6 +101,14 @@ public class GameManager : MonoBehaviour
 		public float feedbackTextDuration;
 	}
 	public event EventHandler<FeedbackTextStatusEventArgs> FeedbackTextStatus;
+
+	public class CoralCompositionStatusChangedEventArgs : EventArgs
+	{
+		public int branchingTotal;
+		public int encrustingTotal;
+		public int massiveTotal;
+	}
+	public event EventHandler<CoralCompositionStatusChangedEventArgs> CoralCompositionChanged;
 	#endregion
 
 	#region Generic Helper Functions
@@ -436,6 +444,13 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
+		CoralCompositionChanged?.Invoke(this, new CoralCompositionStatusChangedEventArgs
+		{
+			branchingTotal = coralTypeNumbers[0],
+			encrustingTotal = coralTypeNumbers[1],
+			massiveTotal = coralTypeNumbers[2]
+		});
+
 		foreach (Vector3Int pos in algaeTileMap.cellBounds.allPositionsWithin)
 		{
 			if (!algaeTileMap.HasTile(pos)) continue; // does this case even happen???
@@ -754,6 +769,12 @@ public class GameManager : MonoBehaviour
 				growingCorals[type].RemoveAt(tempIdx);
 			}
 			AddCoralOnMap(position, GameAssets.instance.coralTileBases00[type], 0);
+			CoralCompositionChanged?.Invoke(this, new CoralCompositionStatusChangedEventArgs
+			{
+				branchingTotal = coralTypeNumbers[0],
+				encrustingTotal = coralTypeNumbers[1],
+				massiveTotal = coralTypeNumbers[2]
+			});
 		}
 		else if (readyNum == 0 && loadedNum - readyNum > 0)
 		{
@@ -826,6 +847,12 @@ public class GameManager : MonoBehaviour
 			if (!coralCells.ContainsKey(key)) continue;
 			RemoveCoralOnMap(key);
 		}
+		CoralCompositionChanged?.Invoke(this, new CoralCompositionStatusChangedEventArgs
+		{
+			branchingTotal = coralTypeNumbers[0],
+			encrustingTotal = coralTypeNumbers[1],
+			massiveTotal = coralTypeNumbers[2]
+		});
 		markedToDieCoral.Clear();
 	}
 
@@ -846,6 +873,12 @@ public class GameManager : MonoBehaviour
 						if (coralTileMap.HasTile(localPlace) || coralCells.ContainsKey(localPlace) || algaeTileMap.HasTile(localPlace)) continue;
 						// AddCoralOnMap(localPlace, coralCells[key].TileBase, 0);
 						AddCoralOnMap(localPlace, GameAssets.instance.coralTileBases00[GetIndexOfTileBase(coralCells[key].TileBase)], 0);
+						CoralCompositionChanged?.Invoke(this, new CoralCompositionStatusChangedEventArgs
+						{
+							branchingTotal = coralTypeNumbers[0],
+							encrustingTotal = coralTypeNumbers[1],
+							massiveTotal = coralTypeNumbers[2]
+						});
 					}
 				}
 			}
