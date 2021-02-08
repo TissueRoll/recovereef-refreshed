@@ -58,18 +58,18 @@ namespace Assets.Scripts.HUD
 		private void OnDestroy()
 		{
 			GameManager.instance.QueueStatusChanged -= ChangeAmount;
+			GameManager.instance.SelectionStatusChanged -= SelectionUpdate;
 		}
 
 		// Update is called once per frame
 		void Update()
 		{
 			bar.current = GameManager.instance.GetSoonestToMatureCoralPercent(type);
+			Color color = image.color;
 			if (pulsing)
 			{
 				float alpha = Mathf.Lerp(min_pulse_val, max_pulse_val, t);
-				Color color = image.color;
 				color.a = alpha;
-				image.color = color;
 
 				t += 3f * Time.deltaTime;
 				if (t > 1.0f)
@@ -82,10 +82,9 @@ namespace Assets.Scripts.HUD
 			}
 			else
 			{
-				Color color = image.color;
 				color.a = 1f;
-				image.color = color;
 			}
+			image.color = color;
 		}
 	}
 }
