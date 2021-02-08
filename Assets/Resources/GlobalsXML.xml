@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GlobalCollection>
     <Globals>
+		<!--debug level-->
         <Global level="0">
             <Zoom>1</Zoom>
             <UpdateDelay>0.5</UpdateDelay>
@@ -11,15 +12,98 @@
             <TimeUntilClimateChange>720</TimeUntilClimateChange>
             <Goal>500</Goal>
         </Global>
-        <Global level="1">
+		<!--real levels-->
+		<Global level="1">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>420</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>500</Goal>
+		</Global>
+        <Global level="2">
             <Zoom>1</Zoom>
             <UpdateDelay>0.5</UpdateDelay>
             <MaxSpaceInNursery>20</MaxSpaceInNursery>
             <MaxSpacePerCoral>400</MaxSpacePerCoral>
             <FeedbackDelayTime>2.5</FeedbackDelayTime>
-            <MaxGameTime>300</MaxGameTime>
+            <MaxGameTime>420</MaxGameTime>
             <TimeUntilClimateChange>200</TimeUntilClimateChange>
-            <Goal>175</Goal>
+            <Goal>500</Goal>
         </Global>
+		<Global level="3">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>420</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>500</Goal>
+		</Global>
+		<!--TUTORIAL LEVELS-->
+		<Global level="4">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>300</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>175</Goal>
+		</Global>
+		<Global level="5">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>300</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>175</Goal>
+		</Global>
+		<Global level="6">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>300</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>175</Goal>
+		</Global>
+		<Global level="7">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>300</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>175</Goal>
+		</Global>
+		<Global level="8">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>300</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>175</Goal>
+		</Global>
+		<!--EXTRA-->
+		<Global level="9">
+			<Zoom>1</Zoom>
+			<UpdateDelay>0.5</UpdateDelay>
+			<MaxSpaceInNursery>20</MaxSpaceInNursery>
+			<MaxSpacePerCoral>400</MaxSpacePerCoral>
+			<FeedbackDelayTime>2.5</FeedbackDelayTime>
+			<MaxGameTime>300</MaxGameTime>
+			<TimeUntilClimateChange>200</TimeUntilClimateChange>
+			<Goal>175</Goal>
+		</Global>
     </Globals>
 </GlobalCollection>
