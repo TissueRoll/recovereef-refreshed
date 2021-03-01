@@ -516,10 +516,19 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	public void StopTime()
+	{
+		Time.timeScale = 0f;
+	}
+
+	public void ResumeTime()
+	{
+		Time.timeScale = 1f;
+	} 
+
 	private void UpdateShovelTimer()
 	{
 		shovelTimer.updateTime();
-
 	}
 
 	private void UpdateNursingCorals()
