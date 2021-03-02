@@ -7,12 +7,16 @@ namespace Assets.Scripts
 	{
 
 		[SerializeField] private GameObject[] popUps;
+		[SerializeField] private GameObject pageNumber;
+		private TMPro.TextMeshProUGUI pageNumberText;
 		public int popupIndex = 0;
 
 		// Use this for initialization
 		void Start()
 		{
+			pageNumberText = pageNumber.GetComponent<TMPro.TextMeshProUGUI>();
 			popupIndex = 0;
+			pageNumberText.text = $"{popupIndex + 1} of {popUps.Length}";
 			GameManager.instance.StopTime();
 			// any event subscription
 		}
@@ -48,6 +52,7 @@ namespace Assets.Scripts
 			{
 				popupIndex++;
 			}
+			pageNumberText.text = $"{popupIndex + 1} of {popUps.Length}";
 		}
 		public void RewindTutorial()
 		{
@@ -59,6 +64,7 @@ namespace Assets.Scripts
 			{
 				popupIndex--;
 			}
+			pageNumberText.text = $"{popupIndex + 1} of {popUps.Length}";
 		}
 
 		public void CloseTutorial()
