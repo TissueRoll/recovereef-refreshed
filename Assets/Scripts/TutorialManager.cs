@@ -44,7 +44,7 @@ namespace Assets.Scripts
 
 		public void AdvanceTutorial()
 		{
-			if (popupIndex == popUps.Length - 1)
+			if (popupIndex >= popUps.Length - 1)
 			{
 				// do nothing
 			}
@@ -56,7 +56,7 @@ namespace Assets.Scripts
 		}
 		public void RewindTutorial()
 		{
-			if (popupIndex == 0)
+			if (popupIndex <= 0)
 			{
 				// do nothing
 			} 
