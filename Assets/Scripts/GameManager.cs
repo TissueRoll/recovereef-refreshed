@@ -380,7 +380,7 @@ public class GameManager : MonoBehaviour
 		climateChangeHasWarned = false;
 		climateChangeHasHappened = false;
 		economyMachine = new EconomyMachine(10f, 0f, 5f, 15);
-		timeUntilEnd = new CountdownTimer(60f);
+		timeUntilEnd = new CountdownTimer(globalVarContainer.globals[level].timeUntilEnd); //(60f);
 		gameIsWon = false;
 		timeToKillCorals = false;
 		print("level is " + globalVarContainer.globals[level].level);

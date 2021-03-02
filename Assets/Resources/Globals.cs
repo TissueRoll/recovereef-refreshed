@@ -26,6 +26,8 @@ public class Globals
 	public float timeUntilClimateChange;
 	[XmlElement("Goal")]
 	public float goal;
+	[XmlElement("TimeUntilEnd")]
+	public float timeUntilEnd;
 
 	public string what_are()
 	{
@@ -39,6 +41,7 @@ public class Globals
 		output += "\nmaxGameTime: " + maxGameTime;
 		output += "\ntimeUntilClimateChange: " + timeUntilClimateChange;
 		output += "\ngoal: " + goal;
+		output += "\ntimeUntilEnd: " + timeUntilEnd;
 		return output;
 	}
 }
