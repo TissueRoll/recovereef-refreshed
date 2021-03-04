@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
@@ -20,4 +20,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/01_02_Game_Hard.unity
     guid: ba546987ee9a30c4ea3b9b2b9afd799d
+  - enabled: 1
+    path: Assets/Scenes/00_00_Tutorial_Controls.unity
+    guid: 051027b7da8e90049a01607351cfb29a
+  - enabled: 1
+    path: Assets/Scenes/00_01_Tutorial_Corals_Basics.unity
+    guid: 1a872eeec5a9b1f459a99cc038a0ed1c
+  - enabled: 1
+    path: Assets/Scenes/00_02_Tutorial_Substrata_Algae.unity
+    guid: dac92e668cf8dd44588f5fe0ddb2bc7f
+  - enabled: 1
+    path: Assets/Scenes/00_03_Tutorial_Events.unity
+    guid: 2c2745721424ed94ca2e2d25af85898a
+  - enabled: 1
+    path: Assets/Scenes/00_04_Tutorial_Corals_Advanced.unity
+    guid: 0c336c81ca82afd42859ab6594a5f9f0
   m_configObjects: {}
