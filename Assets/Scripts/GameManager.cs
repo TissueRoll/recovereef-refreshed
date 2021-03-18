@@ -466,6 +466,9 @@ public class GameManager : MonoBehaviour
 
 		shovelTimer = new CountdownTimer(120f);
 	}
+	// BAND-AID
+	private bool game7ForceEvent1 = false;
+	private bool game7ForceEvent2 = false;
 
 	private void Start()
 	{
@@ -493,6 +496,20 @@ public class GameManager : MonoBehaviour
 		DisasterUpdates();
 		UpdateNursingCorals();
 		UpdateShovelTimer();
+
+		if (Level == 7)
+		{
+			if (Math.Abs(gameTimer.percentComplete - 0.33) < 0.001 && !game7ForceEvent1)
+			{
+				RandomDisaster(1);
+				game7ForceEvent1 = true;
+			}
+			else if (Math.Abs(gameTimer.percentComplete - 0.66) < 0.001 && !game7ForceEvent2)
+			{
+				RandomDisaster(2);
+				game7ForceEvent2 = true;
+			}
+		}
 
 		gameTimer.updateTime();
 		if (gameTimer.isDone())
