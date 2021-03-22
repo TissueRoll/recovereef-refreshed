@@ -374,6 +374,7 @@ public class GameManager : MonoBehaviour
 		}
 		InitializeTiles();
 		print("initialization done");
+		print($"Substrata Count: {substrataCells.Count}");
 		gameTimer = new CountdownTimer(globalVarContainer.globals[level].maxGameTime);
 		disasterTimer = new CountdownTimer(30f); // make into first 5 mins immunity
 		climateChangeTimer = new CountdownTimer(globalVarContainer.globals[level].timeUntilClimateChange);
