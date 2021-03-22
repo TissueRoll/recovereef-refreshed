@@ -858,6 +858,8 @@ public class GameManager : MonoBehaviour
 					// setting data
 					markedToDieCoral.Add(key);
 					coralTileMap.SetTile(key, ConvertAliveCoralToDead(coralCells[key].TileBase));
+					coralTileMap.SetTileFlags(key, TileFlags.None);
+					coralTileMap.SetColor(key, new Color(1.0f, 1.0f, 1.0f, 0.70f));
 				}
 			}
 		}
@@ -931,6 +933,8 @@ public class GameManager : MonoBehaviour
 					{
 						markedToDieCoral.Add(removePos); // __TIMING__
 						coralTileMap.SetTile(removePos, ConvertAliveCoralToDead(coralCells[removePos].TileBase));
+						coralTileMap.SetTileFlags(removePos, TileFlags.None);
+						coralTileMap.SetColor(removePos, new Color(1.0f, 1.0f, 1.0f, 0.70f));
 					}
 				}
 				popupScript.makeEvent(UnityEngine.Random.Range(2, 4));
@@ -950,6 +954,8 @@ public class GameManager : MonoBehaviour
 					markedToDieCoral.Add(toxicPos); // __TIMING__
 					// this is replacing the asset with a dying coral sprite
 					coralTileMap.SetTile(toxicPos, ConvertAliveCoralToDead(coralCells[toxicPos].TileBase));
+					coralTileMap.SetTileFlags(toxicPos, TileFlags.None);
+					coralTileMap.SetColor(toxicPos, new Color(1.0f, 1.0f, 1.0f, 0.70f));
 				}
 				if (algaeCells.ContainsKey(toxicPos))
 				{
