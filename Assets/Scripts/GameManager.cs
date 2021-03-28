@@ -8,6 +8,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using Assets.Scripts.Inputs;
 using Assets.Scripts.EntityClasses;
+using Assets.Scripts;
 
 public class GameManager : MonoBehaviour
 {
@@ -546,7 +547,12 @@ public class GameManager : MonoBehaviour
 
 	private void UpdateShovelTimer()
 	{
+		bool pdone = shovelTimer.isDone();
 		shovelTimer.updateTime();
+		if (shovelTimer.isDone() && !pdone)
+		{
+			AudioManager.instance.Play("Shovel");
+		}
 	}
 
 	private void UpdateNursingCorals()
