@@ -22,7 +22,7 @@
 			<FeedbackDelayTime>2.5</FeedbackDelayTime>
 			<MaxGameTime>420</MaxGameTime>
 			<TimeUntilClimateChange>200</TimeUntilClimateChange>
-			<Goal>500</Goal>
+			<Goal>100</Goal>
 			<TimeUntilEnd>60</TimeUntilEnd>
 		</Global>
         <Global level="2">
@@ -33,7 +33,7 @@
             <FeedbackDelayTime>2.5</FeedbackDelayTime>
             <MaxGameTime>420</MaxGameTime>
             <TimeUntilClimateChange>200</TimeUntilClimateChange>
-            <Goal>500</Goal>
+            <Goal>150</Goal>
 			<TimeUntilEnd>60</TimeUntilEnd>
         </Global>
 		<Global level="3">
@@ -44,7 +44,7 @@
 			<FeedbackDelayTime>2.5</FeedbackDelayTime>
 			<MaxGameTime>420</MaxGameTime>
 			<TimeUntilClimateChange>200</TimeUntilClimateChange>
-			<Goal>500</Goal>
+			<Goal>150</Goal>
 			<TimeUntilEnd>60</TimeUntilEnd>
 		</Global>
 		<!--TUTORIAL LEVELS-->
@@ -112,7 +112,7 @@
 			<FeedbackDelayTime>2.5</FeedbackDelayTime>
 			<MaxGameTime>121</MaxGameTime>
 			<TimeUntilClimateChange>500</TimeUntilClimateChange>
-			<Goal>0</Goal>
+			<Goal>15</Goal>
 			<TimeUntilEnd>120</TimeUntilEnd>
 		</Global>
     </Globals>

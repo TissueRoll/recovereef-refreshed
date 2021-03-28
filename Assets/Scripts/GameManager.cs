@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private InputHandler _inputHandler;
 #pragma warning restore 0649
 	public int Level => level;
+	public float goal { get; set; }
 	#endregion
 	#region Components of GameObjects
 	Grid grid;
@@ -385,6 +386,7 @@ public class GameManager : MonoBehaviour
 		timeUntilEnd = new CountdownTimer(globalVarContainer.globals[level].timeUntilEnd); //(60f);
 		gameIsWon = false;
 		timeToKillCorals = false;
+		goal = globalVarContainer.globals[level].goal;
 		print("level is " + globalVarContainer.globals[level].level);
 	}
 
