@@ -34,7 +34,7 @@ namespace Assets.Scripts.HUD
 			if (GameEnd.gameHasEnded || PauseScript.GamePaused)
 				return;
 
-			fishDisplayText.text = "Fish Income: " + GameManager.instance.fishIncome;
+			fishDisplayText.text = $"Goal: {GameManager.instance.fishIncome}";
 			if (GameManager.instance.FishProsperityState() == 1)
 			{
 				fishImageImage.color = Utility.green;
