@@ -45,14 +45,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: Theme
+    type: Music
     clip: {fileID: 8300000, guid: 72a6cc26b3e1cd24583ec7f385fb76c2, type: 3}
     volume: 1
     pitch: 1
     loop: 1
     source: {fileID: 0}
   - name: Shovel
-    clip: {fileID: 8300000, guid: 10a1bab2c5b888d438e435f19f699b8e, type: 3}
+    type: SFX
+    clip: {fileID: 8300000, guid: d260e108475bd3541a6997777f84458a, type: 3}
     volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  musicVolume: 1
+  sfxVolume: 1
