@@ -658,12 +658,12 @@ public class GameManager : MonoBehaviour
 					algaeTileMap.SetTile(key, GameAssets.instance.algaeTileBases02[idx]);
 					algaeCells[key].TileBase = GameAssets.instance.algaeTileBases02[idx];
 				}
-				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != GameAssets.instance.algaeTileBases01[idx].name)
+				else if (15 <= algaeCells[key].maturity && algaeCells[key].maturity < 25 && algaeCells[key].TileBase.name != GameAssets.instance.algaeTileBases01[idx].name)
 				{
 					algaeTileMap.SetTile(key, GameAssets.instance.algaeTileBases01[idx]);
 					algaeCells[key].TileBase = GameAssets.instance.algaeTileBases01[idx];
 				}
-				else if (algaeCells[key].maturity >= 15 && algaeCells[key].TileBase.name != GameAssets.instance.algaeTileBases00[idx].name)
+				else if (0 <= algaeCells[key].maturity && algaeCells[key].maturity < 15 && algaeCells[key].TileBase.name != GameAssets.instance.algaeTileBases00[idx].name)
 				{
 					algaeTileMap.SetTile(key, GameAssets.instance.algaeTileBases00[idx]);
 					algaeCells[key].TileBase = GameAssets.instance.algaeTileBases00[idx];
@@ -852,12 +852,12 @@ public class GameManager : MonoBehaviour
 					coralTileMap.SetTile(key, GameAssets.instance.coralTileBases02[idx]);
 					coralCells[key].TileBase = GameAssets.instance.coralTileBases02[idx];
 				}
-				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != GameAssets.instance.coralTileBases01[idx].name)
+				else if (15 <= coralCells[key].maturity && coralCells[key].maturity < 25 && coralCells[key].TileBase.name != GameAssets.instance.coralTileBases01[idx].name)
 				{
 					coralTileMap.SetTile(key, GameAssets.instance.coralTileBases01[idx]);
 					coralCells[key].TileBase = GameAssets.instance.coralTileBases01[idx];
 				}
-				else if (coralCells[key].maturity >= 15 && coralCells[key].TileBase.name != GameAssets.instance.coralTileBases00[idx].name)
+				else if (0 <= coralCells[key].maturity && coralCells[key].maturity < 15 && coralCells[key].TileBase.name != GameAssets.instance.coralTileBases00[idx].name)
 				{
 					coralTileMap.SetTile(key, GameAssets.instance.coralTileBases00[idx]);
 					coralCells[key].TileBase = GameAssets.instance.coralTileBases00[idx];
